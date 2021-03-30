@@ -1,0 +1,9 @@
+{
+    // Git Bash
+"terminal.integrated.shell.windows": "d:\\Program Files\\Git\\git-cmd.exe",
+"terminal.integrated.shellArgs.windows": [
+  "--command=usr/bin/bash.exe",
+  "-l",
+  "-i"
+]
+}
