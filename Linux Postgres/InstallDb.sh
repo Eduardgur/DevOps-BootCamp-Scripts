@@ -17,5 +17,4 @@ sudo ufw allow 5432/tcp
 echo "Checking port 5432:"
 sudo lsof -n -P | grep 5432
 echo "Please restart the server"
-pause
 exit
