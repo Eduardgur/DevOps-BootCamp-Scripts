@@ -152,8 +152,6 @@ $TaskPrincipal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAcc
 $TaskDefinition = New-ScheduledTask -Action $TaskAction -Principal $TaskPrincipal -Trigger $TaskTrigger  -Description "Run $($TaskName) at startup"
 Register-ScheduledTask -TaskName $taskName -InputObject $TaskDefinition
 
-#Register-ScheduledJob -Trigger $TaskTrigger -FilePath "$RepoDir\PM2Resurrect.ps1" -Name $TaskName 2>$null
-
 
 Write-Host "Done !" -ForegroundColor Green  
  
