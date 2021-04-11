@@ -103,13 +103,6 @@ $ExternalIp = (Get-NetIPAddress -AddressFamily IPv4 | ? {$_.InterfaceAlias -like
 Write-Output ".env file edited" 
 
 
-
-<# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- Install DB first (from app srv - no internet connection)
-   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #> 
-
-
-
 #Initializing DB
 Write-Output "Initializing DB"
 Invoke-Expression -Command "npm run initdb"
