@@ -123,7 +123,13 @@ Write-Output "Saving state"
 Invoke-Expression -Command "pm2 save -f" 
 Invoke-Expression -Command "pm2 kill"
 Invoke-Expression -Command "pm2 resurrect" 
+Invoke-Expression -Command "cd c:\users\${$env.username}\AppData\Roaming\npm\node_modules\@innomizetech\pm2-windows-service" 
+Invoke-Expression -Command "npm install" 
+Invoke-Expression -Command "npm update" 
 Invoke-Expression -Command "pm2-service-install -n PM2 --unattended" 
+Invoke-Expression -Command "pm2 kill"
+Invoke-Expression -Command "pm2 resurrect" 
 
 Write-Output "Done !" 
  
+Start-Sleep -Seconds 60 | Restart-Computer -force
