@@ -1,6 +1,5 @@
 #VM Credentials
 AdminUserName = "eduardgu"
-// AdminPassword = "QWer1234Q"
 VaultName = "WR-Terraform-Vault"
 VaultResourceGroupName = "TFState"
 VaultUri = "https://wr-terraform-vault.vault.azure.net"
