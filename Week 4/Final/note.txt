@@ -1,0 +1,9 @@
+requiers to run this solution because of the bl nat pool
+https://social.msdn.microsoft.com/Forums/en-US/06fa15df-dc85-4c7b-8cbb-080eb2993d82/inbound-nat-rule-portal-support-for-load-balancers-associated-to-virtual-machine-scale-sets?forum=WAVirtualMachinesforWindows
+Scale set ip configuration
+
+"loadBalancerInboundNatPools": [
+                      {
+                        "id": "/subscriptions/d42af30d-46dc-4a1b-a533-cdc6907772db/resourceGroups/WeightTracker-ResourceGroup/providers/Microsoft.Network/loadBalancers/App-LoadBalancer/inboundNatPools/App-Lb-Nat-Pool"
+                      }
+                    ]
