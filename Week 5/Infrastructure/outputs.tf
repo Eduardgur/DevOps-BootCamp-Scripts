@@ -1,20 +1,20 @@
 #Outputs the linux VM admin password
-output "LinuxPass" {
-    sensitive = true
-    value = module.scale_sets.AdminPass
-  }
 
 #Outputs APP public Ip
  output "AppPublicIp" {
   value = azurerm_public_ip.AppPublicIp.ip_address
 }
 
-#Outputs backend nat gateway public Ip
- output "DbPublicIp" {
-  value = azurerm_public_ip.DbPublicIp.ip_address
+output "DbIp" {
+  value = azurerm_private_endpoint.DbServerPrivateEndpoint.private_service_connection.0.private_ip_address
 }
 
-#Outputs backend loadbalancer frontend Ip
- output "PrivateDbIp" {
-  value = azurerm_lb.DbLoadbalancer.private_ip_address
+output "DbName" {
+  value = "Servername: ${azurerm_postgresql_server.DbServer.name} DBname:${azurerm_postgresql_database.DB.name}"
 }
+
+ output "JenkinsPublicIp" {
+  value = azurerm_public_ip.JenkinsPublicIp.ip_address
+}
+
+
