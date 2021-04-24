@@ -13,8 +13,11 @@ output "DbName" {
   value = "Servername: ${azurerm_postgresql_server.DbServer.name} DBname:${azurerm_postgresql_database.DB.name}"
 }
 
- output "JenkinsPublicIp" {
+ output "JenkinsMasterPublicIp" {
   value = azurerm_public_ip.JenkinsPublicIp.ip_address
 }
 
 
+ output "JenkinsSlavePrivateIp" {
+  value = azurerm_linux_virtual_machine.JenkinsSlave.private_ip_address
+}

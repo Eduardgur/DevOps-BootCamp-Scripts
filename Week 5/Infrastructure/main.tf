@@ -525,3 +525,56 @@ resource "azurerm_linux_virtual_machine" "JenkinsMaster" {
     }
   }
 }
+
+
+
+                                                                            ### Slave ###
+
+
+#VM Nic
+resource "azurerm_network_interface" "JenkinsSlaveVmNic" {
+  name                = "Jenkins-VM-Nic-Slave"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  ip_configuration {
+    name                          = "local"
+    subnet_id                     = azurerm_subnet.JenkinsSubnet.id
+    primary                       = "true"
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "JenkinsSlave" {
+  name                = "Jenkins-VM-Slave"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = var.VmSize
+  
+  admin_username      = var.AdminUserName
+  disable_password_authentication = false
+  admin_password = data.azurerm_key_vault_secret.VMPass.value
+  custom_data = filebase64("../Provisioning/jenkins_agent_provision.txt")
+
+  network_interface_ids = [
+    azurerm_network_interface.JenkinsSlaveVmNic.id,
+  ]
+
+   admin_ssh_key {
+    username   = var.AdminUserName
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+}
