@@ -102,5 +102,10 @@ echo "Registering startup task"
 sudo pm2 startup
 sudo pm2 status
 
+#Create jenkins user 
+user="jenkins"
+pass=$(perl -e 'print crypt($ARGV[0], "salt")' $dbPass)
+useradd -s /bin/bash -m -p $pass $user
+
 echo "Done !"  
 exit
