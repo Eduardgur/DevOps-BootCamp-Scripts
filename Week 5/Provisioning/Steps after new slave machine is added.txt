@@ -1,0 +1,15 @@
+On Master
+    Generete new ssh kets
+        ssh-keygen
+    Copy keys to jenkins credentials
+    
+New Slave created
+    Remvoe old cert from trusted hosts
+        ssh-keygen -f "/home/eduardgu/.ssh/known_hosts" -R "192.168.2.5"
+    Read slave cert to trusted hosts 
+        ssh-keyscan -H 192.168.2.5 >> ~/.ssh/known_hosts
+    Push cert from master as jenkins user 
+        ssh-copy-id jenkins@192.168.2.5
+    ** If connection is refuesd try to first login with admin first
+
+Add to trusted using the agent page (left panel > Trust SSH Host Key)

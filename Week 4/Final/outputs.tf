@@ -5,12 +5,12 @@ output "LinuxPass" {
   }
 
 #Outputs APP public Ip
- output "PublicIp" {
+ output "AppPublicIp" {
   value = azurerm_public_ip.AppPublicIp.ip_address
 }
 
 #Outputs backend nat gateway public Ip
- output "PublicIp" {
+ output "DbPublicIp" {
   value = azurerm_public_ip.DbPublicIp.ip_address
 }
 
