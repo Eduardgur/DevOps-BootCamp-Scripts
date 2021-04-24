@@ -105,7 +105,8 @@ sudo pm2 status
 #Create jenkins user 
 user="jenkins"
 pass=$(perl -e 'print crypt($ARGV[0], "salt")' $dbPass)
-useradd -s /bin/bash -m -p $pass $user
+sudo useradd -s /bin/bash -m -p $pass $user
+sudo usermod -aG sudo $user
 
 echo "Done !"  
 exit
