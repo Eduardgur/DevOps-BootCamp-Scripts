@@ -5,6 +5,7 @@ runcmd:
   - apt-get update -y
   - apt install default-jre -y
   - apt install git -y
+  - apt install unzip -y
   - curl -L "https://raw.githubusercontent.com/tj/n/master/bin/n" -o n
   - bash n lts  
   - user="jenkins"
