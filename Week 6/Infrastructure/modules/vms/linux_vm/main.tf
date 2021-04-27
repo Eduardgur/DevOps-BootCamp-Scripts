@@ -1,25 +1,25 @@
-local { 
-    nic_name_suffix = "NIC",
-    nic_ip_configuration_name = "",
-    nic_ip_configuration_private_ip_address_allocation = "Dynamic",
-    nic_primary = "true",
-    vm_name = "VM",
-    vm_os_disk_caching = "ReadWrite",
-    vm_os_disk_storage_account_type = "Standard_LRS",
-    vm_source_image_reference_publisher = "Canonical",
-    vm_source_image_reference_offer = "UbuntuServer",
-    vm_source_image_reference_sku = "18.04-LTS",
-    vm_source_image_reference_version = "latest",
-    vm_connection_type = "ssh",
-    vm_connection_agent = "false",
-    vm_connection_user = "",
-    vm_connection_host = "",
-    port_prefix = "6500",
+locals { 
+    nic_name_suffix = "NIC"
+    nic_ip_configuration_name = ""
+    nic_ip_configuration_private_ip_address_allocation = "Dynamic"
+    nic_primary = "true"
+    vm_name = "VM"
+    vm_os_disk_caching = "ReadWrite"
+    vm_os_disk_storage_account_type = "Standard_LRS"
+    vm_source_image_reference_publisher = "Canonical"
+    vm_source_image_reference_offer = "UbuntuServer"
+    vm_source_image_reference_sku = "18.04-LTS"
+    vm_source_image_reference_version = "latest"
+    vm_connection_type = "ssh"
+    vm_connection_agent = "false"
+    vm_connection_user = ""
+    vm_connection_host = ""
+    port_prefix = "6500"
 }
 
 #VM Nic
 resource "azurerm_network_interface" "nic" {
-  count = local.count
+  count = local.vm_count
   name                 = "${var.name}-${local.nic_name_suffix}"
   resource_group_name = local.rg_name
   location            = local.location
@@ -34,14 +34,14 @@ resource "azurerm_network_interface" "nic" {
 
 #Associate VM nic to NSG
 resource "azurerm_network_interface_security_group_association" "nic_nsg_association" {
-  count = local.count
+  count = local.vm_count
   network_interface_id      = azurerm_network_interface.nic[count.index].id
   network_security_group_id = var.nic_nsg_id
 }
 
 #Create VMs for the frontend app
 resource "azurerm_linux_virtual_machine" "AppVm" {
-  count = local.count
+  count = local.vm_count
   name                = "${local.name}-${local.vm_name}-${count.index}"
   resource_group_name = local.rg_name
   location            = local.location
@@ -81,7 +81,7 @@ resource "azurerm_linux_virtual_machine" "AppVm" {
       user        = var.vm_admin_username
     //   host        = azurerm_public_ip.AppPublicIp.ip_address
       port        = "${local.port_prefix}${count.index}"
-      private_key = file(local.vm_private_ssh_key))
+      private_key = file(var.vm_private_ssh_key)
     }
   }
 
@@ -95,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "AppVm" {
       user        = var.vm_admin_username
     //   host        = azurerm_public_ip.AppPublicIp.ip_address
       port        = "${local.port_prefix}${count.index}"
-      private_key = file(local.vm_private_ssh_key))
+      private_key = file(var.vm_private_ssh_key)
     }
   }
 }

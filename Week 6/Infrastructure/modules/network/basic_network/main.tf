@@ -1,8 +1,8 @@
 #Naming locals
 locals {
-    vnet_suffis = "VNet",
-    subnet_sufix = "Subnet",
-    nsg_suffix = "NSG",
+    vnet_suffis = "VNet"
+    subnet_sufix = "Subnet"
+    nsg_suffix = "NSG"
 }
 
 #Create subnet for the frontend

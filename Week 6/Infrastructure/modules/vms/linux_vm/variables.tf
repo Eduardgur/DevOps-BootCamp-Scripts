@@ -13,11 +13,6 @@ variable "name" {
   type = string
 }
 
-variable "count" {
-  description = "Numbet of instances to create"
-  type = string
-}
-
 variable "nic_subnet_id" {
   description = "Subnet ID to associate nic to "
   type = string
@@ -62,13 +57,9 @@ variable "provision_script_destination" {
 variable "provision_script" {
   description = "Script to run on provision"
   type = list(string)
-  default = [
-      "sudo chmod +x /home/${var.admin_username}/provision.sh",
-      "sudo bash /home/${var.admin_username}/provision.sh '${azurerm_network_interface.nic[count.index].private_ip_address}' '8080' '${azurerm_public_ip.AppPublicIp.ip_address}' '${azurerm_private_endpoint.DbServerPrivateEndpoint.private_service_connection.0.private_ip_address}' 'https://dev-91725987.okta.com' '0oac29sg1MnlaSgsu5d6' 'tyM1Gtw1rGwXVscTZ1uTBjPj6ZzvazWVTehyuCex' '5432' '${var.admin_username}@${azurerm_postgresql_server.DbServer.name}' '${azurerm_postgresql_database.DB.name}' '${data.azurerm_key_vault_secret.VMPass.value}' > '/home/${var.admin_username}/provision.log'" ,
-    ]
 }
 
-variable "count" {
+variable "vm_count" {
   description = "Number of vms to create"
   type = number
   default = 1

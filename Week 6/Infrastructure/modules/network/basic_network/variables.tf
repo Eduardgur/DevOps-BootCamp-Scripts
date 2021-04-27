@@ -18,7 +18,7 @@ variable "subnet_cidr" {
   type = string
 }
 
-variable "nic_service_endpoints " {
+variable "nic_service_endpoints" {
   description = "List of service endpoints"
   type = list(string)
   default = []

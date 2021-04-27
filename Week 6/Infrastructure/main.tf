@@ -1,7 +1,8 @@
 locals {
-  user_secret_name = "VmName",
-  pass_secret_name = "VmPass",
-  rg_name_suffix = "ResourceGroup",
+  user_secret_name = "VmName"
+  pass_secret_name = "VmPass"
+  rg_name_suffix = "ResourceGroup"
+  vnet_suffis = "VNet"
 }
 
 #Retrieve credentials
@@ -30,8 +31,8 @@ resource "azurerm_resource_group" "rg" {
 
 #Creates Virtual network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.rg_name}-${local.vnet_suffis}"
-  resource_group_name = var.azurerm_resource_group.rg.name
+  name                = "${azurerm_resource_group.rg.name}-${local.vnet_suffis}"
+  resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   address_space       = [var.vnet_cidr]
 }
@@ -41,7 +42,7 @@ module "frontend" {
   source = "./modules/services/front_end"
 
   location = var.location
-  rg_name = var.azurerm_resource_group.rg.name
+  rg_name = azurerm_resource_group.rg.name
   name = var.name
   subnet_cidr = var.frontend_subnet_cidr
   vm_size = var.vm_size
@@ -58,11 +59,10 @@ module "backend" {
   source = "./modules/services/back_end"
 
   location = var.location
-  rg_name = var.azurerm_resource_group.rg.name
+  rg_name = azurerm_resource_group.rg.name
   name = var.name
   subnet_cidr = var.backend_subnet_cidr
-  vm_size = var.vm_size
-  vm_admin_username = data.azurerm_key_vault_secret.vm_user
+  admin_username = data.azurerm_key_vault_secret.vm_user
   admin_password = data.azurerm_key_vault_secret.vm_pass
   inbound_address_prefixes = var.frontend_subnet_cidr
 }
@@ -72,14 +72,14 @@ module "jenkins" {
   source = "./modules/services/jenkins"
 
   location = var.location
-  rg_name = vvar.azurerm_resource_group.rg.name
+  rg_name = azurerm_resource_group.rg.name
   name = var.name
   subnet_cidr = var.jenkins_subnet_cidr
   vm_size = var.vm_size
   vm_admin_username = data.azurerm_key_vault_secret.vm_user
   vm_public_ssh_key = var.public_ssh_key
   vm_private_ssh_key = var.private_ssh_key
-  provision_script_source = var.backend_provision_sript_source
-  provision_script_destination = var.backend_provision_sript_destination
-  provision_script = var.backend_provision_sript
+  provision_script_source = var.jenkins_provision_sript_source
+  provision_script_destination = var.jenkins_provision_sript_destination
+  main_provision_script = var.jenkins_provision_sript
 }

@@ -29,23 +29,17 @@ public_ssh_key = "~/.ssh/id_rsa.pub"
 private_ssh_key = "~/.ssh/id_rsa"
 
 #Frontend provision script path
-frontend_provision_sript = [
-     "sudo chmod +x /home/${var.AdminUserName}/provision.sh",
-      "sudo bash /home/${var.AdminUserName}/provision.sh '${azurerm_network_interface.AppVmNic[count.index].private_ip_address}' '8080' '${azurerm_public_ip.AppPublicIp.ip_address}' '${azurerm_private_endpoint.DbServerPrivateEndpoint.private_service_connection.0.private_ip_address}' 'https://dev-91725987.okta.com' '0oac29sg1MnlaSgsu5d6' 'tyM1Gtw1rGwXVscTZ1uTBjPj6ZzvazWVTehyuCex' '5432' '${var.AdminUserName}@${azurerm_postgresql_server.DbServer.name}' '${azurerm_postgresql_database.DB.name}' '${data.azurerm_key_vault_secret.VMPass.value}' > '/home/${var.AdminUserName}/provision.log'" ,
-]
+frontend_provision_sript = []
 #Frontend provision script source path
 frontend_provision_sript_source = "../Provisioning/app_provision.sh"
 #Frontend provision script destinations path
-frontend_provision_sript_destination = "/home/${var.AdminUserName}/provision.sh"
+frontend_provision_sript_destination = "/home/eduardgu/provision.sh"
 
 #Jenkins provision script path
-jenkins_provision_sript = [
-     "sudo chmod +x /home/${var.AdminUserName}/jenkins_provision.sh",
-      "sudo bash /home/${var.AdminUserName}/jenkins_provision.sh",
-]
+jenkins_provision_sript = []
 #Jenkins provision script source path
 jenkins_provision_sript_source = "../Provisioning/jenkins_provision.sh"
 #Jenkins provision script destinations path
-jenkins_provision_sript_destination = "/home/${var.AdminUserName}/jenkins_provision.sh"
+jenkins_provision_sript_destination = "/home/eduardgu/jenkins_provision.sh"
 
 

@@ -1,25 +1,25 @@
 locals {
-    name = "Jenkins",
-    nsg_rule_http_name                        = "Allow-HTTP-All",
-    nsg_rule_http_priority                    = 101,
-    nsg_rule_http_direction                   = "Inbound",
-    nsg_rule_http_access                      = "Allow",
-    nsg_rule_http_protocol                    = "Tcp",
-    nsg_rule_http_source_address_prefix       = "Internet",
-    nsg_rule_http_source_port_range           = "*",
-    nsg_rule_http_destination_port_range      = "8080",
-    nsg_rule_ssh_name                        = "Allow-SSH-All",
-    nsg_rule_ssh_priority                    = 102,
-    nsg_rule_ssh_direction                   = "Inbound",
-    nsg_rule_ssh_access                      = "Allow",
-    nsg_rule_ssh_protocol                    = "Tcp",
-    nsg_rule_ssh_source_address_prefix       = "Internet",
-    nsg_rule_ssh_source_port_range           = "*",
-    nsg_rule_ssh_destination_port_range      = "22",
+    name = "Jenkins"
+    nsg_rule_http_name                        = "Allow-HTTP-All"
+    nsg_rule_http_priority                    = 101
+    nsg_rule_http_direction                   = "Inbound"
+    nsg_rule_http_access                      = "Allow"
+    nsg_rule_http_protocol                    = "Tcp"
+    nsg_rule_http_source_address_prefix       = "Internet"
+    nsg_rule_http_source_port_range           = "*"
+    nsg_rule_http_destination_port_range      = "8080"
+    nsg_rule_ssh_name                        = "Allow-SSH-All"
+    nsg_rule_ssh_priority                    = 102
+    nsg_rule_ssh_direction                   = "Inbound"
+    nsg_rule_ssh_access                      = "Allow"
+    nsg_rule_ssh_protocol                    = "Tcp"
+    nsg_rule_ssh_source_address_prefix       = "Internet"
+    nsg_rule_ssh_source_port_range           = "*"
+    nsg_rule_ssh_destination_port_range      = "22"
     public_ip_name_suffix = "Public-Ip"
-    public_ip_allocation_method = "Static",
-    public_ip_allocation_sku = "standard",
-    main_vm_name_suffix = "VM-Main",
+    public_ip_allocation_method = "Static"
+    public_ip_allocation_sku = "standard"
+    main_vm_name_suffix = "VM-Main"
     agent_vm_name_suffix = "VM-Agent"
 }
 
@@ -47,7 +47,6 @@ resource "azurerm_network_security_rule" "nsg_rule_http" {
   source_port_range           = local.nsg_rule_http_source_port_range
   destination_address_prefix  = var.jenkins_subnet_cidr
   destination_port_range      = local.nsg_rule_http_destination_port_range
-  network_security_group_name = basic_network.network.nsg_name
 }
 
 #Creates NSG rule for jenkins - allow tcp 22 from internet to jenkins subnet
@@ -63,7 +62,7 @@ resource "azurerm_network_security_rule" "nsg_rule_ssh" {
   source_port_range           = local.nsg_rule_ssh_source_port_range 
   destination_address_prefix  = var.jenkins_subnet_cidr 
   destination_port_range      = local.nsg_rule_ssh_destination_port_range 
-  network_security_group_name = basic_network.network.nsg_name 
+  network_security_group_nme = basic_network.network.nsg_name 
 }
 
 #Create public ip for jenkins
@@ -83,7 +82,7 @@ module "master_vm" {
     location = var.location
     rg_name = var.rg_name 
     count = 1
-    nic_subnet = basic_network.network.subnet_id
+    nic_subnet_id = basic_network.network.subnet_id
     nic_nsg_id = basic_network.network.nsg_id
     vm_admin_username = var.vm_admin_username
     vm_size = var.vm_size
@@ -98,12 +97,13 @@ module "master_vm" {
 module "agent_vm" {
     source = "../../vms/linux_vm"
     
-    cout = var.agent_count
+    vm_count = var.vm_count
+
+    location = var.location
     name = "${var.name}-${local.agent_vm_name_suffix}"
-    local = var.local
     rg_name = var.rg_name 
     count = var.agent_count
-    nic_subnet = basic_network.network.subnet_id
+    nic_subnet_id = basic_network.network.subnet_id
     nic_nsg_id = basic_network.network.nsg_id
     vm_admin_username = var.vm_admin_username
     vm_size = var.vm_size

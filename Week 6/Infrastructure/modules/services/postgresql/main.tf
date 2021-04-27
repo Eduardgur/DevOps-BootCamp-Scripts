@@ -1,17 +1,17 @@
 locals{
-    server_name_suffix = "postgers-server",
-    server_sku = "GP_Gen5_2",
-    server_version = "11",
+    server_name_suffix = "postgers-server"
+    server_sku = "GP_Gen5_2"
+    server_version = "11"
     server_storage_mb = "5120"
-    server_ssl_enforcment = false,
-    db_name_suffix = "postgers-database",
-    db_charset = "UTF8",
-    db_collation = "English_United States.1252",
-    db_network_rule_name = "Postgres-VNet-Rule",
-    db_network_rule_ignore_missing_vnet_service_endpoint = true,
+    server_ssl_enforcment = false
+    db_name_suffix = "postgers-database"
+    db_charset = "UTF8"
+    db_collation = "English_United States.1252"
+    db_network_rule_name = "Postgres-VNet-Rule"
+    db_network_rule_ignore_missing_vnet_service_endpoint = true
     db_private_endpoint = "Private-Endpoint"
-    db_private_service_connection_name_suffix = "Private-Service-Connection",
-    db_private_service_connection_subresource_names = ["postgresqlServer"],
+    db_private_service_connection_name_suffix = "Private-Service-Connection"
+    db_private_service_connection_subresource_names = ["postgresqlServer"]
     db_private_service_connection_is_manual_connection = false
 
 }

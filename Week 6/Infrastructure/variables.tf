@@ -13,6 +13,16 @@ variable "vnet_cidr" {
   type = string
 }
 
+variable "vault_name" {
+    type = string
+    description = "Vault name that contains the admin password"
+}
+
+variable "vault_rg_name" {
+    type = string
+    description = "Name of the resource group containing the vault"
+}
+
 variable "frontend_subnet_cidr" {
   type = string
 }
@@ -25,22 +35,39 @@ variable "jenkins_subnet_cidr" {
   type = string
 }
 
-variable "vault_name" {
-    type = vault_name
-    description = "Vault name that contains the admin password"
-}
-
-variable "VaultResourceGroupName" {
-    type = string
-    description = "Name of the resource group containing the vault"
-}
-
-variable "VaultUri" {
-    type = string
-    description = "Vault uri that contains the admin password"
-}
-
 # VM size (sku)
-variable "VmSize" {
+variable "vm_size" {
+  type = string
+}
+
+variable "public_ssh_key" {
+  type = string
+}
+
+variable "private_ssh_key" {
+  type = string
+}
+
+variable "frontend_provision_sript" {
+  type = list(string)
+}
+
+variable "frontend_provision_sript_source" {
+  type = string
+}
+
+variable "frontend_provision_sript_destination" {
+  type = string
+}
+
+variable "jenkins_provision_sript" {
+  type = list(string)
+}
+
+variable "jenkins_provision_sript_source" {
+  type = string
+}
+
+variable "jenkins_provision_sript_destination" {
   type = string
 }

@@ -1,22 +1,22 @@
 locals{
-    name= "FrontEnd",
-    vm_name_suffix = "Linux-VM",
-    nsg_rule_http_name                        = "Allow-HTTP-All",
-    nsg_rule_http_priority                    = 101,
-    nsg_rule_http_direction                   = "Inbound",
-    nsg_rule_http_access                      = "Allow",
-    nsg_rule_http_protocol                    = "Tcp",
-    nsg_rule_http_source_address_prefix       = "Internet",
-    nsg_rule_http_source_port_range           = "*",
-    nsg_rule_http_destination_port_range      = "80",
-    nsg_rule_ssh_name                        = "Allow-SSH-All",
-    nsg_rule_ssh_priority                    = 102,
-    nsg_rule_ssh_direction                   = "Inbound",
-    nsg_rule_ssh_access                      = "Allow",
-    nsg_rule_ssh_protocol                    = "Tcp",
-    nsg_rule_ssh_source_address_prefix       = "Internet",
-    nsg_rule_ssh_source_port_range           = "*",
-    nsg_rule_ssh_destination_port_range      = "22",
+    name= "FrontEnd"
+    vm_name_suffix = "Linux-VM"
+    nsg_rule_http_name                        = "Allow-HTTP-All"
+    nsg_rule_http_priority                    = 101
+    nsg_rule_http_direction                   = "Inbound"
+    nsg_rule_http_access                      = "Allow"
+    nsg_rule_http_protocol                    = "Tcp"
+    nsg_rule_http_source_address_prefix       = "Internet"
+    nsg_rule_http_source_port_range           = "*"
+    nsg_rule_http_destination_port_range      = "80"
+    nsg_rule_ssh_name                        = "Allow-SSH-All"
+    nsg_rule_ssh_priority                    = 102
+    nsg_rule_ssh_direction                   = "Inbound"
+    nsg_rule_ssh_access                      = "Allow"
+    nsg_rule_ssh_protocol                    = "Tcp"
+    nsg_rule_ssh_source_address_prefix       = "Internet"
+    nsg_rule_ssh_source_port_range           = "*"
+    nsg_rule_ssh_destination_port_range      = "22"
 }
 
 #Create nework for the front end
@@ -48,7 +48,7 @@ module "vms" {
     name = "${var.name}-${local.name}"
     location = var.location
     rg_name = var.rg_name 
-    nic_subnet = basic_network.network.subnet_id
+    nic_subnet_id = basic_network.network.subnet_id
     nic_nsg_id = basic_network.network.nsg_id
     vm_admin_username = var.vm_admin_username
     vm_size = var.vm_size
@@ -73,7 +73,6 @@ resource "azurerm_network_security_rule" "nsg_rule_http" {
   source_port_range           = local.nsg_rule_http_source_port_range
   destination_address_prefix  = var.nsg_rule_http_destination_address_prefix
   destination_port_range      = local.nsg_rule_http_destination_port_range
-  network_security_group_name = basic_network.network.nsg_name
 }
 
 #Creates NSG rule for jenkins - allow tcp 22 from internet to frontend subnet
@@ -89,7 +88,6 @@ resource "azurerm_network_security_rule" "nsg_rule_ssh" {
   source_port_range           = local.nsg_rule_ssh_source_port_range 
   destination_address_prefix  = var.nsg_rule_ssh_destination_address_prefix 
   destination_port_range      = local.nsg_rule_ssh_destination_port_range 
-  network_security_group_name = basic_network.network.nsg_name 
 }
 
 #Assiciate VM nic to LB address pool

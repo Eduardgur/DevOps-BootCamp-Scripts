@@ -1,13 +1,13 @@
 locals{
-    name= "BackEnd",
-    nsg_rule_db_name                        = "Allow-Postgres-All",
-    nsg_rule_db_priority                    = 103,
-    nsg_rule_db_direction                   = "Inbound",
-    nsg_rule_db_access                      = "Allow",
-    nsg_rule_db_protocol                    = "Tcp",
-    nsg_rule_db_source_address_prefix       = "Internet",
-    nsg_rule_db_source_port_range           = "5432",
-    nsg_rule_db_destination_port_range      = "5432",
+    name= "BackEnd"
+    nsg_rule_db_name                        = "Allow-Postgres-All"
+    nsg_rule_db_priority                    = 103
+    nsg_rule_db_direction                   = "Inbound"
+    nsg_rule_db_access                      = "Allow"
+    nsg_rule_db_protocol                    = "Tcp"
+    nsg_rule_db_source_address_prefix       = "Internet"
+    nsg_rule_db_source_port_range           = "5432"
+    nsg_rule_db_destination_port_range      = "5432"
 }
 
 
@@ -28,7 +28,6 @@ module "postgresql" {
     location = var.location
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
-    subnet_cidr = var.subnet_cidr
     server_admin_username = local.admin_username
     server_admin_password = local.admin_password
     server_subnet_id = basic_network.network.subnet_id
@@ -42,7 +41,7 @@ resource "azurerm_network_security_rule" "postgres_nsg_rule" {
   priority                     = local.nsg_rule_db_priority
   direction                    = local.nsg_rule_db_direction
   access                       = local.nsg_rule_db_access
-  protocol                     = kicak,nsg_rule_db_protocol
+  protocol                     = local.nsg_rule_db_protocol
   source_address_prefixes      = var.inbound_address_prefixes
   source_port_range            = local.nsg_rule_db_source_port_range
   destination_address_prefixes = var.subnet_cidr
