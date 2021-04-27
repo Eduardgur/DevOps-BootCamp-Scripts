@@ -3,7 +3,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "TFState"
     storage_account_name = "wtterratest"
-    container_name       = "week5state"
+    container_name       = "week6state"
     key                  = "prod.terraform.tfstate"
   }
 }
