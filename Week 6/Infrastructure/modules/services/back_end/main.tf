@@ -19,6 +19,7 @@ module "network" {
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
     subnet_cidr = var.subnet_cidr
+    vnet_name = var.vnet_name
 }
 
 #Create postgresql server
@@ -28,16 +29,16 @@ module "postgresql" {
     location = var.location
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
-    server_admin_username = local.admin_username
-    server_admin_password = local.admin_password
-    server_subnet_id = basic_network.network.subnet_id
+    server_admin_username = var.admin_username
+    server_admin_password = var.admin_password
+    server_subnet_id = module.network.subnet_id
 }
 
 #Creates NSG rule for the backend - allow tcp 5432 from frontend subnet to backend subnet
 resource "azurerm_network_security_rule" "postgres_nsg_rule" {
   name                         = "${var.name}-${local.name}"
-  resource_group_name          = local.rg_name
-  network_security_group_name  = azurerm_network_security_group.DbNsg.name
+  resource_group_name          = var.rg_name
+  network_security_group_name  = module.network.nsg_name
   priority                     = local.nsg_rule_db_priority
   direction                    = local.nsg_rule_db_direction
   access                       = local.nsg_rule_db_access

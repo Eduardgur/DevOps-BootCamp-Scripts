@@ -43,6 +43,7 @@ module "frontend" {
 
   location = var.location
   rg_name = azurerm_resource_group.rg.name
+  vnet_name = azurerm_virtual_network.vnet.name
   name = var.name
   subnet_cidr = var.frontend_subnet_cidr
   vm_size = var.vm_size
@@ -61,6 +62,7 @@ module "backend" {
   location = var.location
   rg_name = azurerm_resource_group.rg.name
   name = var.name
+  vnet_name = azurerm_virtual_network.vnet.name
   subnet_cidr = var.backend_subnet_cidr
   admin_username = data.azurerm_key_vault_secret.vm_user
   admin_password = data.azurerm_key_vault_secret.vm_pass
@@ -74,6 +76,7 @@ module "jenkins" {
   location = var.location
   rg_name = azurerm_resource_group.rg.name
   name = var.name
+  vnet_name = azurerm_virtual_network.vnet.name
   subnet_cidr = var.jenkins_subnet_cidr
   vm_size = var.vm_size
   vm_admin_username = data.azurerm_key_vault_secret.vm_user
@@ -82,4 +85,27 @@ module "jenkins" {
   provision_script_source = var.jenkins_provision_sript_source
   provision_script_destination = var.jenkins_provision_sript_destination
   main_provision_script = var.jenkins_provision_sript
+}
+
+
+data "azurerm_public_ip" "fronend_public_ip" {
+  name = module.frontend.public_ip_name
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+data "azurerm_private_endpoint_connection" "backend_private_ip" {
+  name = module.backend.postgresql_server_name
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+data "azurerm_public_ip" "jenkins_public_ip" {
+  name = module.jenkins.public_ip_name
+  resource_group_name = azurerm_resource_group.rg.name
+  depends_on = [module.jenkins]
+}
+
+data "azurerm_public_ip" "jenkins_agent_private_ip" {
+  name = module.jenkins.agent_private_ip
+  resource_group_name = azurerm_resource_group.rg.name
+  depends_on = [module.jenkins]
 }

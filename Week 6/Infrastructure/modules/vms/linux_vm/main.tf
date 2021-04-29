@@ -1,6 +1,6 @@
 locals { 
     nic_name_suffix = "NIC"
-    nic_ip_configuration_name = ""
+    nic_ip_configuration_name = "private"
     nic_ip_configuration_private_ip_address_allocation = "Dynamic"
     nic_primary = "true"
     vm_name = "VM"
@@ -19,10 +19,10 @@ locals {
 
 #VM Nic
 resource "azurerm_network_interface" "nic" {
-  count = local.vm_count
+  count = var.vm_count
   name                 = "${var.name}-${local.nic_name_suffix}"
-  resource_group_name = local.rg_name
-  location            = local.location
+  resource_group_name = var.rg_name
+  location            = var.location
 
   ip_configuration {
     name                          = local.nic_ip_configuration_name
@@ -34,19 +34,19 @@ resource "azurerm_network_interface" "nic" {
 
 #Associate VM nic to NSG
 resource "azurerm_network_interface_security_group_association" "nic_nsg_association" {
-  count = local.vm_count
+  count = var.vm_count
   network_interface_id      = azurerm_network_interface.nic[count.index].id
   network_security_group_id = var.nic_nsg_id
 }
 
 #Create VMs for the frontend app
-resource "azurerm_linux_virtual_machine" "AppVm" {
-  count = local.vm_count
-  name                = "${local.name}-${local.vm_name}-${count.index}"
-  resource_group_name = local.rg_name
-  location            = local.location
+resource "azurerm_linux_virtual_machine" "vm" {
+  count = var.vm_count
+  name                = "${var.name}-${local.vm_name}-${count.index}"
+  resource_group_name = var.rg_name
+  location            = var.location
   size                = var.vm_size
-  admin_username      = var.vm_admin_username
+  admin_username      = var.admin_username
 
   network_interface_ids = [
     azurerm_network_interface.nic[count.index].id,
@@ -54,7 +54,7 @@ resource "azurerm_linux_virtual_machine" "AppVm" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file(local.vm_public_ssh_key)
+    public_key = file(var.vm_public_ssh_key)
   }
 
   os_disk {
@@ -72,13 +72,14 @@ resource "azurerm_linux_virtual_machine" "AppVm" {
   custom_data = filebase64(var.provision_custom_data_script_path)
 
   provisioner "file" {
-    source      = local.provision_script_source
-    destination = local.provision_script_destination
+    source      = var.provision_script_source
+    destination = var.provision_script_destination
 
     connection {
+      host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
       type        = local.vm_connection_type
       agent       = local.vm_connection_agent
-      user        = var.vm_admin_username
+      user        = var.admin_username
     //   host        = azurerm_public_ip.AppPublicIp.ip_address
       port        = "${local.port_prefix}${count.index}"
       private_key = file(var.vm_private_ssh_key)
@@ -90,9 +91,10 @@ resource "azurerm_linux_virtual_machine" "AppVm" {
     inline = var.provision_script
 
     connection {
+      host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
       type        = local.vm_connection_type
       agent       = local.vm_connection_agent
-      user        = var.vm_admin_username
+      user        = var.admin_username
     //   host        = azurerm_public_ip.AppPublicIp.ip_address
       port        = "${local.port_prefix}${count.index}"
       private_key = file(var.vm_private_ssh_key)

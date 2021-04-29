@@ -1,7 +1,7 @@
 #Naming locals
 locals {
     vnet_suffis = "VNet"
-    subnet_sufix = "Subnet"
+    subnet_suffix = "Subnet"
     nsg_suffix = "NSG"
 }
 
@@ -9,10 +9,10 @@ locals {
 resource "azurerm_subnet" "subnet" {
   name                 = "${var.name}-${local.subnet_suffix}"
   resource_group_name   = var.rg_name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  virtual_network_name = var.vnet_name
   address_prefixes     = [var.subnet_cidr]
-  service_endpoints                              = local.nic_service_endpoints
-  enforce_private_link_endpoint_network_policies = local.nic_enforce_private_link_endpoint_network_policies
+  service_endpoints                              = var.nic_service_endpoints
+  enforce_private_link_endpoint_network_policies = var.nic_enforce_private_link_endpoint_network_policies
 }
 
 #Create NSG for the frontend

@@ -27,6 +27,7 @@ module "network" {
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
     subnet_cidr = var.subnet_cidr
+    vnet_name = var.vnet_name
 }
 
 #Create loadbalancer for the front end
@@ -48,9 +49,9 @@ module "vms" {
     name = "${var.name}-${local.name}"
     location = var.location
     rg_name = var.rg_name 
-    nic_subnet_id = basic_network.network.subnet_id
-    nic_nsg_id = basic_network.network.nsg_id
-    vm_admin_username = var.vm_admin_username
+    nic_subnet_id = module.network.subnet_id
+    nic_nsg_id = module.network.nsg_id
+    admin_username = var.vm_admin_username
     vm_size = var.vm_size
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
@@ -64,14 +65,14 @@ module "vms" {
 resource "azurerm_network_security_rule" "nsg_rule_http" {
   name                        = local.nsg_rule_http_name
   resource_group_name         = var.rg_name
-  network_security_group_name = basic_network.network.nsg_name
+  network_security_group_name = module.network.nsg_name
   priority                    = local.nsg_rule_http_priority
   direction                   = local.nsg_rule_http_direction
   access                      = local.nsg_rule_http_access
   protocol                    = local.nsg_rule_http_protocol
   source_address_prefix       = local.nsg_rule_http_source_address_prefix
   source_port_range           = local.nsg_rule_http_source_port_range
-  destination_address_prefix  = var.nsg_rule_http_destination_address_prefix
+  destination_address_prefix  = var.subnet_cidr
   destination_port_range      = local.nsg_rule_http_destination_port_range
 }
 
@@ -79,33 +80,33 @@ resource "azurerm_network_security_rule" "nsg_rule_http" {
 resource "azurerm_network_security_rule" "nsg_rule_ssh" {
   name                        = local.nsg_rule_ssh_name 
   resource_group_name         = var.rg_name 
-  network_security_group_name = basic_network.network.nsg_name
+  network_security_group_name = module.network.nsg_name
   priority                    = local.nsg_rule_ssh_priority 
   direction                   = local.nsg_rule_ssh_direction
   access                      = local.nsg_rule_ssh_access 
   protocol                    = local.nsg_rule_ssh_protocol 
   source_address_prefix       = local.nsg_rule_ssh_source_address_prefix 
   source_port_range           = local.nsg_rule_ssh_source_port_range 
-  destination_address_prefix  = var.nsg_rule_ssh_destination_address_prefix 
+  destination_address_prefix  = var.subnet_cidr 
   destination_port_range      = local.nsg_rule_ssh_destination_port_range 
 }
 
-#Assiciate VM nic to LB address pool
-resource "azurerm_network_interface_backend_address_pool_association" "AppVmNicToAddressPool" {
+#Associate VM nic to LB address pool
+resource "azurerm_network_interface_backend_address_pool_association" "App_vm_nic_to_address_pool" {
   count = var.vm_count
 
-  network_interface_id    = linux_vm.vms.nic_id
-  ip_configuration_name   = linux_vm.nic_ip_configuration_name
-  backend_address_pool_id = http_loadbalancer.loadbalancer.lb_backend_address_pool_id
-  depends_on              = [linux_vm.vms]
+  network_interface_id    = module.vms[count.index].nic_id
+  ip_configuration_name   = module.vms[count.index].nic_ip_configuration_name
+  backend_address_pool_id = module.loadbalancer.lb_backend_address_pool_id
+  depends_on              = [module.vms]
 }
 
 #Associate VM to lb nat rule
-resource "azurerm_network_interface_nat_rule_association" "AppVmNicToLbNatRule" {
-  count = vm_count
+resource "azurerm_network_interface_nat_rule_association" "app_vm_nic_to_lb_nat_rule" {
+  count = var.vm_count
 
-  network_interface_id  = linux_vm.vms.nic_id
-  ip_configuration_name   = linux_vm.nic_ip_configuration_name
-  nat_rule_id           = azurerm_lb_nat_rule.AppLbNatRule[count.index].id
-  depends_on            = [linux_vm.vms]
+  network_interface_id  = module.vms[count.index].nic_id
+  ip_configuration_name   = module.vms[count.index].nic_ip_configuration_name
+  nat_rule_id           = module.loadbalancer.lb_nat_rule_id
+  depends_on            = [module.vms]
 }

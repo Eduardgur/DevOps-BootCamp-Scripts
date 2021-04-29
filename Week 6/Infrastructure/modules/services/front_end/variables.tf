@@ -18,6 +18,11 @@ variable "subnet_cidr" {
   type = string
 }
 
+variable "vnet_name" {
+  description = "Name of the VNet to associate with the new subnet"
+  type = string
+}
+
 variable "vm_count" {
   description = "Number of vms to create in the frontend"
   type = number

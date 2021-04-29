@@ -24,9 +24,15 @@ variable "nic_nsg_id" {
 }
 
 
-variable "vm_admin_username" {
+variable "admin_username" {
   description = "Admin username for vm instances"
   type = string
+}
+
+variable "vm_host_ip" {
+  description = "Host ip for provision defaults to private"
+  type = string
+  default = ""
 }
 
 variable "vm_size" {

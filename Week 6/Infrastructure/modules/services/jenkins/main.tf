@@ -31,6 +31,7 @@ module "network" {
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
     subnet_cidr = var.subnet_cidr
+    vnet_name = var.vnet_name
 }
 
 
@@ -38,14 +39,14 @@ module "network" {
 resource "azurerm_network_security_rule" "nsg_rule_http" {
   name                        = local.nsg_rule_http_name
   resource_group_name         = var.rg_name
-  network_security_group_name = basic_network.network.nsg_name
+  network_security_group_name = module.network.nsg_name
   priority                    = local.nsg_rule_http_priority
   direction                   = local.nsg_rule_http_direction
   access                      = local.nsg_rule_http_access
   protocol                    = local.nsg_rule_http_protocol
   source_address_prefix       = local.nsg_rule_http_source_address_prefix
   source_port_range           = local.nsg_rule_http_source_port_range
-  destination_address_prefix  = var.jenkins_subnet_cidr
+  destination_address_prefix  = var.subnet_cidr
   destination_port_range      = local.nsg_rule_http_destination_port_range
 }
 
@@ -53,38 +54,37 @@ resource "azurerm_network_security_rule" "nsg_rule_http" {
 resource "azurerm_network_security_rule" "nsg_rule_ssh" {
   name                        = local.nsg_rule_ssh_name 
   resource_group_name         = var.rg_name 
-  network_security_group_name = basic_network.network.nsg_name
+  network_security_group_name = module.network.nsg_name
   priority                    = local.nsg_rule_ssh_priority 
   direction                   = local.nsg_rule_ssh_direction
   access                      = local.nsg_rule_ssh_access 
   protocol                    = local.nsg_rule_ssh_protocol 
   source_address_prefix       = local.nsg_rule_ssh_source_address_prefix 
   source_port_range           = local.nsg_rule_ssh_source_port_range 
-  destination_address_prefix  = var.jenkins_subnet_cidr 
+  destination_address_prefix  = var.subnet_cidr 
   destination_port_range      = local.nsg_rule_ssh_destination_port_range 
-  network_security_group_nme = basic_network.network.nsg_name 
 }
 
 #Create public ip for jenkins
-resource "azurerm_public_ip" "JenkinsPublicIp" {
+resource "azurerm_public_ip" "public_ip" {
   name                = "${var.name}-${local.public_ip_name_suffix} " 
-  location            = local.location
-  resource_group_name = local.rg_name
-  allocation_method   = public_ip_allocation_method
-  sku                 = public_ip_allocation_sku
+  location            = var.location
+  resource_group_name = var.rg_name
+  allocation_method   = local.public_ip_allocation_method
+  sku                 = local.public_ip_allocation_sku
 }
 
 #Create jenkins master vm
-module "master_vm" {
+module "main_vm" {
     source = "../../vms/linux_vm"
 
     name = "${var.name}-${local.main_vm_name_suffix}"
     location = var.location
     rg_name = var.rg_name 
     count = 1
-    nic_subnet_id = basic_network.network.subnet_id
-    nic_nsg_id = basic_network.network.nsg_id
-    vm_admin_username = var.vm_admin_username
+    nic_subnet_id = module.network.subnet_id
+    nic_nsg_id = module.network.nsg_id
+    admin_username = var.vm_admin_username
     vm_size = var.vm_size
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
@@ -97,15 +97,15 @@ module "master_vm" {
 module "agent_vm" {
     source = "../../vms/linux_vm"
     
-    vm_count = var.vm_count
+    vm_count = var.agent_count
 
     location = var.location
     name = "${var.name}-${local.agent_vm_name_suffix}"
     rg_name = var.rg_name 
     count = var.agent_count
-    nic_subnet_id = basic_network.network.subnet_id
-    nic_nsg_id = basic_network.network.nsg_id
-    vm_admin_username = var.vm_admin_username
+    nic_subnet_id = module.network.subnet_id
+    nic_nsg_id = module.network.nsg_id
+    admin_username = var.vm_admin_username
     vm_size = var.vm_size
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key

@@ -18,6 +18,11 @@ variable "subnet_cidr" {
   type = string
 }
 
+variable "vnet_name" {
+  description = "Name of the VNet to associate with the new subnet"
+  type = string
+}
+
 variable "nic_service_endpoints" {
   description = "List of service endpoints"
   type = list(string)

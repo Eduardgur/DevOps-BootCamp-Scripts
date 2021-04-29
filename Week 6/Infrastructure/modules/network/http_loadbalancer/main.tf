@@ -26,7 +26,6 @@ locals {
 
 #Create public ip
 resource "azurerm_public_ip" "public_ip" {
-  count               = var.create_public_ip ? 1 : 0
   name                = "${var.name}-${local.ip_suffix}"
   resource_group_name = var.rg_name
   location            = var.location
@@ -49,26 +48,26 @@ resource "azurerm_lb" "loadbalancer" {
 
 #Creates backend ip pool for the frontend loadbalancer 
 resource "azurerm_lb_backend_address_pool" "app_lb_backend_pool" {
-  loadbalancer_id = azurerm_lb.AppLoadbalancer.id
+  loadbalancer_id = azurerm_lb.loadbalancer.id
   name            = local.lb_pool_name
 }
 
 #Creates loadbalancer rule for the frontend - tcp 80
 resource "azurerm_lb_rule" "app_http_lb_rule" {
-  resource_group_name            = azurerm_resource_group.rg.name
-  loadbalancer_id                = azurerm_lb.AppLoadbalancer.id
-  name                           = local.lb_ruile_name
-  protocol                       = local.lb_ruile_protocol
+  resource_group_name            = var.rg_name
+  loadbalancer_id                = azurerm_lb.loadbalancer.id
+  name                           = local.lb_rule_name
+  protocol                       = local.lb_rule_protocol
   frontend_ip_configuration_name = local.lb_frontend_ip_name
-  frontend_port                  = local.lb_ruile_front
-  backend_port                   = local.lb_ruile_back
+  frontend_port                  = local.lb_rule_front
+  backend_port                   = local.lb_rule_back
   backend_address_pool_id        = azurerm_lb_backend_address_pool.app_lb_backend_pool.id
   probe_id                       = azurerm_lb_probe.app_http_prob.id
 }
 
 #Creates loadbalancer prob for the frontend - 80
 resource "azurerm_lb_probe" "app_http_prob" {
-  resource_group_name            = azurerm_resource_group.rg.name
+  resource_group_name            = var.rg_name
   loadbalancer_id     = azurerm_lb.loadbalancer.id
   name                = local.lb_prob_name
   protocol            = local.lb_prob_protocol
@@ -80,7 +79,7 @@ resource "azurerm_lb_probe" "app_http_prob" {
 #Create lb nat rule to allow ssh
 resource "azurerm_lb_nat_rule" "app_lb_nat_rule" {
   count = var.lb_nat_rule_count
-  resource_group_name            = local.rg_name
+  resource_group_name            = var.rg_name
   loadbalancer_id                = azurerm_lb.loadbalancer.id
   name                           = "${local.lb_nat_rule_name}-${count.index}"
   protocol                       = local.lb_nat_rule_protocol

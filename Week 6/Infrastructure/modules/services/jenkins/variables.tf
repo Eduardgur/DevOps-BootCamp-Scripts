@@ -18,7 +18,10 @@ variable "subnet_cidr" {
   type = string
 }
 
-
+variable "vnet_name" {
+  description = "Name of the VNet to associate with the new subnet"
+  type = string
+}
 
 variable "vm_size" {
   description = "VM SKU (size)"
@@ -57,8 +60,8 @@ variable "main_provision_script" {
 
 variable "agent_provision_custom_data_script_path" {
   description = "Custome data to run on provision"
-  type = string
-  default = "../Provisioning/jenkins_agent_provision.txt"
+  type = list(string)
+  default = ["../Provisioning/jenkins_agent_provision.txt"]
 }
 
 variable "agent_count" {
