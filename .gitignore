@@ -1,8 +1,5 @@
-node-wight-tracker
-WeightTrackerTst
-".\Week 3\Start-Week3_OLD.ps1"
-.terraform
-".\Week 4\.terraform"
-".\Week 4\Testing\.terraform"
-".\Week 4\Final\.terraform"
-".\Week 5\jenkins_backup"
+node-wight-tracker/
+WeightTrackerTst/
+Week 3/Start-Week3_OLD.ps1
+**/.terraform/**
+Week 5/jenkins_backup/**

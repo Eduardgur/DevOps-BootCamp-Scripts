@@ -554,7 +554,7 @@ resource "azurerm_linux_virtual_machine" "JenkinsSlave" {
   admin_username      = var.AdminUserName
   disable_password_authentication = false
   admin_password = data.azurerm_key_vault_secret.VMPass.value
-  custom_data = filebase64("../Provisioning/jenkins_agent_provision.txt")
+  custom_data = filebase64(local.agent_provision_custom_data_script_path)
 
   network_interface_ids = [
     azurerm_network_interface.JenkinsSlaveVmNic.id,
