@@ -15,5 +15,5 @@ output "lb_backend_address_pool_id" {
 
 #Outputs lb nat rule id 
 output "lb_nat_rule_id" {
-  value = azurerm_lb_nat_rule.app_lb_nat_rule.*.id
+  value = [for rule in azurerm_lb_nat_rule.app_lb_nat_rule : rule.id]
 }

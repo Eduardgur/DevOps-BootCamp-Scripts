@@ -39,7 +39,17 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg_associa
   network_security_group_id = var.nic_nsg_id
 }
 
-#Create VMs for the frontend app
+#Associate VM to lb nat rule
+resource "azurerm_network_interface_nat_rule_association" "nic_to_lb_nat_rule_association" {
+  count = var.lb_nat_rule_id[0] != "" ? var.vm_count : 0
+
+  network_interface_id  = azurerm_network_interface.nic[count.index].id
+  ip_configuration_name   =  azurerm_network_interface.nic[count.index].ip_configuration[0].name
+  nat_rule_id           = var.lb_nat_rule_id[count.index]
+  depends_on            = [azurerm_network_interface.nic,var.lb_nat_rule_id]
+}
+
+#Create VMs
 resource "azurerm_linux_virtual_machine" "vm" {
   count = var.vm_count
   name                = "${var.name}-${local.vm_name}-${count.index}"
@@ -49,7 +59,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   admin_username      = var.admin_username
 
   network_interface_ids = [
-    azurerm_network_interface.nic[count.index].id,
+    for nic in azurerm_network_interface.nic : nic.id
   ]
 
   admin_ssh_key {
@@ -69,35 +79,34 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = local.vm_source_image_reference_version
   }
 
-  custom_data = filebase64(var.provision_custom_data_script_path)
+  // custom_data = filebase64(var.provision_custom_data_script_absolute_path)
 
-  provisioner "file" {
-    source      = var.provision_script_source
-    destination = var.provision_script_destination
+  // provisioner "file" {
+  //   source      = var.provision_script_source
+  //   destination = var.provision_script_destination
 
-    connection {
-      host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
-      type        = local.vm_connection_type
-      agent       = local.vm_connection_agent
-      user        = var.admin_username
-    //   host        = azurerm_public_ip.AppPublicIp.ip_address
-      port        = "${local.port_prefix}${count.index}"
-      private_key = file(var.vm_private_ssh_key)
-    }
-  }
+  //   connection {
+  //     host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
+  //     type        = local.vm_connection_type
+  //     agent       = local.vm_connection_agent
+  //     user        = var.admin_username
+  //     port        = "${local.port_prefix}${count.index}"
+  //     private_key = file(var.vm_private_ssh_key)
+  //   }
+  // }
 
-  provisioner "remote-exec" {
-    # Parameters: VM IP , Port ,Public IP , Postgres Server IP , Okta Url  including https:# , Okta Id , Okta Code , DB Port , DB User , DB name , DB pass
-    inline = var.provision_script
+  // provisioner "remote-exec" {
+  //   inline = var.provision_script
 
-    connection {
-      host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
-      type        = local.vm_connection_type
-      agent       = local.vm_connection_agent
-      user        = var.admin_username
-    //   host        = azurerm_public_ip.AppPublicIp.ip_address
-      port        = "${local.port_prefix}${count.index}"
-      private_key = file(var.vm_private_ssh_key)
-    }
-  }
+  //   connection {
+  //     host        = var.vm_host_ip != "" ? var.vm_host_ip : azurerm_network_interface.nic[count.index].private_ip_address
+  //     type        = local.vm_connection_type
+  //     agent       = local.vm_connection_agent
+  //     user        = var.admin_username
+  //     port        = "${local.port_prefix}${count.index}"
+  //     private_key = file(var.vm_private_ssh_key)
+  //   }
+  // }
+
+  depends_on = [azurerm_network_interface_nat_rule_association.nic_to_lb_nat_rule_association]
 }

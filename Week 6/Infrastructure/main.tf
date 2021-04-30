@@ -31,7 +31,7 @@ resource "azurerm_resource_group" "rg" {
 
 #Creates Virtual network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "${azurerm_resource_group.rg.name}-${local.vnet_suffis}"
+  name                = "${var.name}-${local.vnet_suffis}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   address_space       = [var.vnet_cidr]
@@ -40,6 +40,7 @@ resource "azurerm_virtual_network" "vnet" {
 #Create frontend environment
 module "frontend" {
   source = "./modules/services/front_end"
+  vm_count = var.frontend_vm_count
 
   location = var.location
   rg_name = azurerm_resource_group.rg.name
@@ -47,7 +48,7 @@ module "frontend" {
   name = var.name
   subnet_cidr = var.frontend_subnet_cidr
   vm_size = var.vm_size
-  vm_admin_username = data.azurerm_key_vault_secret.vm_user
+  vm_admin_username = data.azurerm_key_vault_secret.vm_user.value
   vm_public_ssh_key = var.public_ssh_key
   vm_private_ssh_key = var.private_ssh_key
   provision_script_source = var.frontend_provision_sript_source
@@ -64,9 +65,10 @@ module "backend" {
   name = var.name
   vnet_name = azurerm_virtual_network.vnet.name
   subnet_cidr = var.backend_subnet_cidr
-  admin_username = data.azurerm_key_vault_secret.vm_user
-  admin_password = data.azurerm_key_vault_secret.vm_pass
-  inbound_address_prefixes = var.frontend_subnet_cidr
+  admin_username = data.azurerm_key_vault_secret.vm_user.value
+  admin_password = data.azurerm_key_vault_secret.vm_pass.value
+  inbound_address_prefixes = module.frontend.subnet_address_prefixes
+  depends_on = [module.frontend]
 }
 
 #Create jenkins environment
@@ -79,33 +81,13 @@ module "jenkins" {
   vnet_name = azurerm_virtual_network.vnet.name
   subnet_cidr = var.jenkins_subnet_cidr
   vm_size = var.vm_size
-  vm_admin_username = data.azurerm_key_vault_secret.vm_user
+  vm_admin_username = data.azurerm_key_vault_secret.vm_user.value
   vm_public_ssh_key = var.public_ssh_key
   vm_private_ssh_key = var.private_ssh_key
   provision_script_source = var.jenkins_provision_sript_source
   provision_script_destination = var.jenkins_provision_sript_destination
   main_provision_script = var.jenkins_provision_sript
+  depends_on = [module.backend]
 }
 
 
-data "azurerm_public_ip" "fronend_public_ip" {
-  name = module.frontend.public_ip_name
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-data "azurerm_private_endpoint_connection" "backend_private_ip" {
-  name = module.backend.postgresql_server_name
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-data "azurerm_public_ip" "jenkins_public_ip" {
-  name = module.jenkins.public_ip_name
-  resource_group_name = azurerm_resource_group.rg.name
-  depends_on = [module.jenkins]
-}
-
-data "azurerm_public_ip" "jenkins_agent_private_ip" {
-  name = module.jenkins.agent_private_ip
-  resource_group_name = azurerm_resource_group.rg.name
-  depends_on = [module.jenkins]
-}

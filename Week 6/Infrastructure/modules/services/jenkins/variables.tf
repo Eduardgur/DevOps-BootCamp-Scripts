@@ -69,3 +69,9 @@ variable "agent_count" {
   type = number
   default = 1
 }
+
+variable "lb_nat_rule_id" {
+  description = "Nat rule id"
+  type = string
+  default = ""
+}

@@ -86,5 +86,4 @@ resource "azurerm_lb_nat_rule" "app_lb_nat_rule" {
   frontend_port                  = "${local.lb_nat_rule_front_port_prefix}${count.index}"
   backend_port                   = local.lb_nat_rule_back_port
   frontend_ip_configuration_name = local.lb_frontend_ip_name
-  // depends_on                     = [local.nic_id]
 }

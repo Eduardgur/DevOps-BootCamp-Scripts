@@ -1,8 +1,8 @@
 #Global name
-name = "WeightTracker"
+name = "PROD-WeightTracker"
 
 #VM Credentials
-vault_name = "WR-Terraform-Vault"
+vault_name = "WT-Vault"
 vault_rg_name = "TFState"
 
 #Main config 
@@ -21,6 +21,8 @@ jenkins_subnet_cidr = "192.168.2.0/24"
 
 
 ### VMs ###
+# Number of vms to create int he frontend
+frontend_vm_count = 3
 #VM sizes
 vm_size = "Standard_B1ms"
 #Public SSH key path

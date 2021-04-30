@@ -35,5 +35,5 @@ variable "admin_password" {
 
 variable "inbound_address_prefixes" {
   description = "List of inbound adress prefixes to allow access from"
-  type = string
+  type = list(string)
 } 

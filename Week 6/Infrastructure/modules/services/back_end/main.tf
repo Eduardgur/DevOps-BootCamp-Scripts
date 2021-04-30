@@ -8,6 +8,8 @@ locals{
     nsg_rule_db_source_address_prefix       = "Internet"
     nsg_rule_db_source_port_range           = "5432"
     nsg_rule_db_destination_port_range      = "5432"
+    nic_service_endpoints                   = ["Microsoft.Sql"]
+    nic_enforce_private_link_endpoint_network_policies = true
 }
 
 
@@ -20,6 +22,8 @@ module "network" {
     name = "${var.name}-${local.name}"
     subnet_cidr = var.subnet_cidr
     vnet_name = var.vnet_name
+    nic_service_endpoints = local.nic_service_endpoints
+    nic_enforce_private_link_endpoint_network_policies = local.nic_enforce_private_link_endpoint_network_policies
 }
 
 #Create postgresql server
@@ -45,7 +49,7 @@ resource "azurerm_network_security_rule" "postgres_nsg_rule" {
   protocol                     = local.nsg_rule_db_protocol
   source_address_prefixes      = var.inbound_address_prefixes
   source_port_range            = local.nsg_rule_db_source_port_range
-  destination_address_prefixes = var.subnet_cidr
+  destination_address_prefixes = module.network.subnet_address_prefixes
   destination_port_range       = local.nsg_rule_db_destination_port_range
 }
 

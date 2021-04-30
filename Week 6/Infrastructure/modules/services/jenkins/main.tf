@@ -19,8 +19,8 @@ locals {
     public_ip_name_suffix = "Public-Ip"
     public_ip_allocation_method = "Static"
     public_ip_allocation_sku = "standard"
-    main_vm_name_suffix = "VM-Main"
-    agent_vm_name_suffix = "VM-Agent"
+    main_vm_name_suffix = "Jenkins-Main"
+    agent_vm_name_suffix = "Jenkins-Agent"
 }
 
 #Create nework for jenkins vms
@@ -86,6 +86,7 @@ module "main_vm" {
     nic_nsg_id = module.network.nsg_id
     admin_username = var.vm_admin_username
     vm_size = var.vm_size
+    vm_host_ip = azurerm_public_ip.public_ip.ip_address
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
     provision_script_source = var.provision_script_source

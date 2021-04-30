@@ -13,6 +13,12 @@ variable "name" {
   type = string
 }
 
+variable "lb_nat_rule_id" {
+  description = "Nat rule id"
+  type = list(string)
+  default = [""]
+}
+
 variable "nic_subnet_id" {
   description = "Subnet ID to associate nic to "
   type = string
@@ -71,8 +77,9 @@ variable "vm_count" {
   default = 1
 }
 
-variable "provision_custom_data_script_path" {
-  description = "Custome data to run on provision"
+variable "provision_custom_data_script_absolute_path" {
+  description = "Absolute path to the custome data script "
   type = string
-  default = ""
+  default = "E:/source/repos/DevOps/Week 6/Provisioning/dummy"
+  // filebase64()
 }

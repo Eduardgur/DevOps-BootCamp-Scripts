@@ -4,6 +4,11 @@ variable "name" {
   type = string
 }
 
+variable "stage" {
+  type = string
+  default = "staging"
+}
+
 #location
 variable "location" {
   type = string
@@ -46,6 +51,12 @@ variable "public_ssh_key" {
 
 variable "private_ssh_key" {
   type = string
+}
+
+variable "frontend_vm_count" {
+  description = "Number of vms to create in the frontend"
+  type = number
+  default = 3
 }
 
 variable "frontend_provision_sript" {

@@ -41,10 +41,10 @@ module "loadbalancer" {
     lb_nat_rule_count = var.vm_count
 }
 
-#Create jenkins master vm
+#Create vm
 module "vms" {
     source = "../../vms/linux_vm"
-    count = var.vm_count
+    vm_count = var.vm_count
 
     name = "${var.name}-${local.name}"
     location = var.location
@@ -53,11 +53,14 @@ module "vms" {
     nic_nsg_id = module.network.nsg_id
     admin_username = var.vm_admin_username
     vm_size = var.vm_size
+    vm_host_ip = module.loadbalancer.public_ip
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
     provision_script_source = var.provision_script_source
     provision_script_destination = var.provision_script_destination
     provision_script = var.provision_script
+    lb_nat_rule_id = module.loadbalancer.lb_nat_rule_id
+    depends_on = [module.loadbalancer]
 }
 
 
@@ -95,18 +98,10 @@ resource "azurerm_network_security_rule" "nsg_rule_ssh" {
 resource "azurerm_network_interface_backend_address_pool_association" "App_vm_nic_to_address_pool" {
   count = var.vm_count
 
-  network_interface_id    = module.vms[count.index].nic_id
-  ip_configuration_name   = module.vms[count.index].nic_ip_configuration_name
+  network_interface_id    = module.vms.nic_id[count.index]
+  ip_configuration_name   = module.vms.nic_ip_configuration_name
   backend_address_pool_id = module.loadbalancer.lb_backend_address_pool_id
   depends_on              = [module.vms]
 }
 
-#Associate VM to lb nat rule
-resource "azurerm_network_interface_nat_rule_association" "app_vm_nic_to_lb_nat_rule" {
-  count = var.vm_count
 
-  network_interface_id  = module.vms[count.index].nic_id
-  ip_configuration_name   = module.vms[count.index].nic_ip_configuration_name
-  nat_rule_id           = module.loadbalancer.lb_nat_rule_id
-  depends_on            = [module.vms]
-}

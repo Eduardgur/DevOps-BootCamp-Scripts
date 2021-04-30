@@ -23,9 +23,4 @@ variable "lb_nat_rule_count" {
   type = number
 }
 
-// #Number of nat rules to create
-// variable "nic_id" {
-//   type = number
-// }
-
 
