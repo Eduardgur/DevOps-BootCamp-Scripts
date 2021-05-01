@@ -1,0 +1,129 @@
+#cloud-config
+package_upgrade: true
+runcmd:
+  - apt update -y
+  - apt-get update -y
+  - apt install default-jre -y
+  - apt install git -y
+  - apt install unzip -y
+  - touch /home/jenkins/.ssh/id_rsa
+  - touch /home/jenkins/.ssh/id_rsa.pub
+  - touch /home/eduardgu/.ssh/id_rsa
+  - touch /home/eduardgu/.ssh/id_rsa.pub
+  - cat - >/home/jenkins/.ssh/id_rsa <<EOF
+      -----BEGIN RSA PRIVATE KEY-----
+      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
+      -----END RSA PRIVATE KEY-----
+      EOF
+    - cat - >/home/jenkins/.ssh/id_rsa.pub <<EOF
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDZZrSr9OPB5bsM6LTY0+q9uDRSq4NnhV2NajWQR80dwSjOMjtYODXjoYNHRCP7B7aiAAl5mJi9EtdPosyQQ1x1kgtxmb0x6+jUB3abTxsV5ZHCbHGo8q2bpnReFXR4eBcZ2UeRtGy0bmqiObL4poN4XjraU3Lt8g08GXDKp7FvPTKfNfj6BUTKYEyKsG9JSFcw3V0wSz09rgw8Su9oJq+xw4insIygTdXMQrwp55scL0SVQR5egr6Q7DGx8UXyKTdVygoEPjxshY/Oq/nncaV+rDgTK2Ghclv0n1HzouIL9yFSxM6hG9OTfLHFWQlZ8I8g1CLbYI66JDsFpuw9H64isk1AgTAdHR5ZyydtxsdcrzVE+ohmb2G+easEk2UA2PvER8eMvMOxe5A5/JqztkDUls8o3AZVWeu8R2zUFIsQFmNDrNhRMfAIHHVNAK6JG1Z6XkOuxVLsZCi+GCIPU2atjF8k2/6TbsIOVANNMdyw/K6zziwfXOJnCmPf5OVZDqInqsr/NfPhlUg1a9MZ1doFJlwu66CCcCSFMS8k25TBmU2DTwEK2TM6siumNHjuIzawM+f9dRXW+7QTAiePwC5b+w54qgri2lFrtfLQY6c4dBlUFou3Yjr/YSEyrZ+dFytb5i/ddfiKdQu+CYH/hTboA1eeRsXw0Q6HlmXxLLonVQ==
+      
+    - cat - >/home/eduardgu/.ssh/id_rsa <<EOF
+      -----BEGIN RSA PRIVATE KEY-----
+      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
+      -----END RSA PRIVATE KEY-----
+      EOF
+    - cat - >/home/eduardgu/.ssh/id_rsa.pub <<EOF
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDZZrSr9OPB5bsM6LTY0+q9uDRSq4NnhV2NajWQR80dwSjOMjtYODXjoYNHRCP7B7aiAAl5mJi9EtdPosyQQ1x1kgtxmb0x6+jUB3abTxsV5ZHCbHGo8q2bpnReFXR4eBcZ2UeRtGy0bmqiObL4poN4XjraU3Lt8g08GXDKp7FvPTKfNfj6BUTKYEyKsG9JSFcw3V0wSz09rgw8Su9oJq+xw4insIygTdXMQrwp55scL0SVQR5egr6Q7DGx8UXyKTdVygoEPjxshY/Oq/nncaV+rDgTK2Ghclv0n1HzouIL9yFSxM6hG9OTfLHFWQlZ8I8g1CLbYI66JDsFpuw9H64isk1AgTAdHR5ZyydtxsdcrzVE+ohmb2G+easEk2UA2PvER8eMvMOxe5A5/JqztkDUls8o3AZVWeu8R2zUFIsQFmNDrNhRMfAIHHVNAK6JG1Z6XkOuxVLsZCi+GCIPU2atjF8k2/6TbsIOVANNMdyw/K6zziwfXOJnCmPf5OVZDqInqsr/NfPhlUg1a9MZ1doFJlwu66CCcCSFMS8k25TBmU2DTwEK2TM6siumNHjuIzawM+f9dRXW+7QTAiePwC5b+w54qgri2lFrtfLQY6c4dBlUFou3Yjr/YSEyrZ+dFytb5i/ddfiKdQu+CYH/hTboA1eeRsXw0Q6HlmXxLLonVQ==
+      EOF
+    - chmod 600 /home/jenkins/.ssh/id_rsa
+    - chmod 600 /home/jenkins/.ssh/id_rsa.pub
+    - chmod 600 /home/eduardgu/.ssh/id_rsa
+    - chmod 600 /home/eduardgu/.ssh/id_rsa.pub
+    

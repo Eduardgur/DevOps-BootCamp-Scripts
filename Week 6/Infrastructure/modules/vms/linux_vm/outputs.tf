@@ -13,6 +13,10 @@ output "nic_id" {
   value = data.azurerm_network_interface.nic.*.id
 }
 
+output "nic_name" {
+  value = [for nic in azurerm_network_interface.nic : nic.name]
+}
+
 output "nic_ip_configuration_name" {
   value = local.nic_ip_configuration_name
 }

@@ -18,10 +18,30 @@ output "main_public_ip_name" {
   value = azurerm_public_ip.public_ip.name
 }
 
+<<<<<<< HEAD
+output "subnet_id" {
+  value = module.network.subnet_id
+}
+
+output "nsg_id" {
+  value = module.network.nsg_id
+=======
 output "main_private_ip" {
   value = data.azurerm_virtual_machine.main_vm.private_ip
 }
 
  output "agent_private_ip" {
   value = ["${data.azurerm_virtual_machine.agent_vm.*.private_ip}"]
+>>>>>>> parent of 23344ce (more fixes)
 }
+
+
+
+// output "main_private_ip" {
+//   value = [for vm in module.agent_vm : vm.private_ip]
+// }
+
+// output "agent_private_ip" {
+//   // value = ["${data.azurerm_virtual_machine.agent_vm.*.private_ip}"]
+//   value = [for vm in module.agent_vm : vm.private_ip]
+// }

@@ -37,7 +37,7 @@ module "loadbalancer" {
     location = var.location
     rg_name = var.rg_name
     name = "${var.name}-${local.name}"
-    create_public_ip = true
+    // create_public_ip = true
     lb_nat_rule_count = var.vm_count
 }
 
@@ -49,15 +49,25 @@ module "vms" {
     name = "${var.name}-${local.name}"
     location = var.location
     rg_name = var.rg_name 
+    // nsg_name = module.network.nsg_name
     nic_subnet_id = module.network.subnet_id
     nic_nsg_id = module.network.nsg_id
     admin_username = var.vm_admin_username
     vm_size = var.vm_size
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
+<<<<<<< HEAD
+    // provision_script_source = var.provision_script_source
+    // provision_script_destination = var.provision_script_destination
+    // provision_script = var.provision_script
+    // provision_custom_data_script_absolute_path = var.provision_custom_data_script_absolute_path
+    lb_nat_rule_count = var.vm_count
+    lb_nat_rule_id = module.loadbalancer.lb_nat_rule_id
+=======
     provision_script_source = var.provision_script_source
     provision_script_destination = var.provision_script_destination
     provision_script = var.provision_script
+>>>>>>> parent of 23344ce (more fixes)
 }
 
 

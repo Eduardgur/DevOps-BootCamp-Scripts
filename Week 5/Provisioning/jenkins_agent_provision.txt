@@ -6,8 +6,6 @@ runcmd:
   - apt install default-jre -y
   - apt install git -y
   - apt install unzip -y
-  - curl -L "https://raw.githubusercontent.com/tj/n/master/bin/n" -o n
-  - bash n lts  
   - user="jenkins"
   - password="QWer1234Q"
   - pass=$(perl -e 'print crypt($ARGV[0], "salt")' $password)

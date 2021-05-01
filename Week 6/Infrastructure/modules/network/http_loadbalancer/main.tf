@@ -79,6 +79,7 @@ resource "azurerm_lb_probe" "app_http_prob" {
 #Create lb nat rule to allow ssh
 resource "azurerm_lb_nat_rule" "app_lb_nat_rule" {
   count = var.lb_nat_rule_count
+  
   resource_group_name            = var.rg_name
   loadbalancer_id                = azurerm_lb.loadbalancer.id
   name                           = "${local.lb_nat_rule_name}-${count.index}"

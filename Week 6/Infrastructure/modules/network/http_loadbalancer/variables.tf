@@ -13,10 +13,10 @@ variable "name" {
   type = string
 }
 
-variable "create_public_ip" {
-  description = "If set to true, create public ip"
-  type        = bool
-}
+// variable "create_public_ip" {
+//   description = "If set to true, create public ip"
+//   type        = bool
+// }
 
 variable "lb_nat_rule_count" {
   description = "Number of nat rules to create"
