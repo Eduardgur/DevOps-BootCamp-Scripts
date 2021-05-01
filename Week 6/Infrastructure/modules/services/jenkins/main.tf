@@ -19,8 +19,8 @@ locals {
     public_ip_name_suffix = "Public-Ip"
     public_ip_allocation_method = "Static"
     public_ip_allocation_sku = "standard"
-    main_vm_name_suffix = "Jenkins-Main"
-    agent_vm_name_suffix = "Jenkins-Agent"
+    main_vm_name_suffix = "VM-Main"
+    agent_vm_name_suffix = "VM-Agent"
 }
 
 #Create nework for jenkins vms
@@ -67,51 +67,58 @@ resource "azurerm_network_security_rule" "nsg_rule_ssh" {
 
 #Create public ip for jenkins
 resource "azurerm_public_ip" "public_ip" {
-  name                = "${var.name}-${local.public_ip_name_suffix} " 
+  name                = "${var.name}-${local.main_vm_name_suffix}-${local.public_ip_name_suffix}" 
   location            = var.location
   resource_group_name = var.rg_name
   allocation_method   = local.public_ip_allocation_method
   sku                 = local.public_ip_allocation_sku
 }
 
+
 #Create jenkins master vm
 module "main_vm" {
     source = "../../vms/linux_vm"
+    vm_count = 1
 
     name = "${var.name}-${local.main_vm_name_suffix}"
     location = var.location
     rg_name = var.rg_name 
-    count = 1
+    public_ip_id = azurerm_public_ip.public_ip.id
     nic_subnet_id = module.network.subnet_id
     nic_nsg_id = module.network.nsg_id
+    // nsg_name = module.network.nsg_name
     admin_username = var.vm_admin_username
     vm_size = var.vm_size
-    vm_host_ip = azurerm_public_ip.public_ip.ip_address
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
-    provision_script_source = var.provision_script_source
-    provision_script_destination = var.provision_script_destination
-    provision_script = var.main_provision_script
+    // provision_script_source = var.provision_script_source
+    // provision_script_destination = var.provision_script_destination
+    // provision_script = var.main_provision_script
+    // provision_custom_data_script_absolute_path = var.provision_custom_data_script_absolute_path
+    // public_ip_id = azurerm_public_ip.public_ip.id
+    depends_on = [module.network, azurerm_public_ip.public_ip]
 }
+
 
 #Create jenkins agent vm
 module "agent_vm" {
     source = "../../vms/linux_vm"
-    
     vm_count = var.agent_count
 
     location = var.location
     name = "${var.name}-${local.agent_vm_name_suffix}"
     rg_name = var.rg_name 
-    count = var.agent_count
+    // nsg_name = module.network.nsg_name
     nic_subnet_id = module.network.subnet_id
     nic_nsg_id = module.network.nsg_id
     admin_username = var.vm_admin_username
     vm_size = var.vm_size
     vm_public_ssh_key = var.vm_public_ssh_key
     vm_private_ssh_key = var.vm_private_ssh_key
-    provision_script_source = var.provision_script_source
-    provision_script_destination = var.provision_script_destination
-    provision_script = var.agent_provision_custom_data_script_path
+    // provision_script_source = var.provision_script_source
+    // provision_script_destination = var.provision_script_destination
+    // provision_script = var.agent_provision_custom_data_script_path
+    // provision_custom_data_script_absolute_path = var.provision_custom_data_script_absolute_path
+    depends_on = [module.main_vm]
 }
 

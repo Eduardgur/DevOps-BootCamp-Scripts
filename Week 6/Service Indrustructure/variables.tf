@@ -9,6 +9,22 @@ variable "location" {
   type = string
 }
 
+variable "dev_remote_vnet_name" {
+  type = string
+}
+
+variable "dev_remote_vnet_rg_name" {
+  type = string
+}
+
+variable "prod_remote_vnet_name" {
+  type = string
+}
+
+variable "prod_remote_vnet_rg_name" {
+  type = string
+}
+
 variable "vnet_cidr" {
   type = string
 }
@@ -21,14 +37,6 @@ variable "vault_name" {
 variable "vault_rg_name" {
     type = string
     description = "Name of the resource group containing the vault"
-}
-
-variable "frontend_subnet_cidr" {
-  type = string
-}
-
-variable "backend_subnet_cidr" {
-  type = string
 }
 
 variable "jenkins_subnet_cidr" {
@@ -48,30 +56,22 @@ variable "private_ssh_key" {
   type = string
 }
 
-variable "frontend_provision_sript" {
-  type = list(string)
-}
+// variable "jenkins_provision_sript" {
+//   type = list(string)
+// }
 
-variable "frontend_provision_sript_source" {
+// variable "jenkins_provision_sript_source" {
+//   type = string
+// }
+
+// variable "jenkins_provision_sript_destination" {
+//   type = string
+// }
+
+variable "jenkins_agent_count" {
   type = string
 }
 
-variable "frontend_provision_sript_destination" {
-  type = string
-}
-
-variable "jenkins_provision_sript" {
-  type = list(string)
-}
-
-variable "jenkins_provision_sript_source" {
-  type = string
-}
-
-variable "jenkins_provision_sript_destination" {
-  type = string
-}
-
-variable "provision_custom_data_script_absolute_path" {
-  type = string
-}
+// variable "provision_custom_data_script_absolute_path" {
+//   type = string
+// }

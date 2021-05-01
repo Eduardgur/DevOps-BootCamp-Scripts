@@ -1,8 +1,8 @@
 #Global name
-name = "DEV-WeightTracker"
+name = "WeightTracker"
 
 #VM Credentials
-vault_name = "WT-Vault"
+vault_name = "WR-Terraform-Vault"
 vault_rg_name = "TFState"
 
 #Main config 
@@ -21,8 +21,6 @@ jenkins_subnet_cidr = "192.168.2.0/24"
 
 
 ### VMs ###
-# Number of vms to create int he frontend
-frontend_vm_count = 3
 #VM sizes
 vm_size = "Standard_B1ms"
 #Public SSH key path
@@ -33,15 +31,15 @@ private_ssh_key = "~/.ssh/id_rsa"
 #Frontend provision script path
 frontend_provision_sript = []
 #Frontend provision script source path
-frontend_provision_sript_source = "../Provisioning/app_provision.sh"
+frontend_provision_sript_source = "../Provisioning/cert_provision.sh"
 #Frontend provision script destinations path
-frontend_provision_sript_destination = "/home/eduardgu/provision.sh"
+frontend_provision_sript_destination = "/home/eduardgu/frontend_provision.sh"
 
 #Jenkins provision script path
 jenkins_provision_sript = []
 #Jenkins provision script source path
-jenkins_provision_sript_source = "../Provisioning/jenkins_provision.sh"
+jenkins_provision_sript_source = "../Provisioning/cert_provision.sh"
 #Jenkins provision script destinations path
 jenkins_provision_sript_destination = "/home/eduardgu/jenkins_provision.sh"
 
-
+provision_custom_data_script_absolute_path = "../Provisioning/cert_provision.txt"

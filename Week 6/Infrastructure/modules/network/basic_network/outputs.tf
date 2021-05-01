@@ -23,8 +23,3 @@ data "azurerm_network_security_group" "nsg" {
  output "subnet_id" {
   value = data.azurerm_subnet.subnet.id
 }
-
-#Outputs subnet CIDR
- output "subnet_address_prefixes" {
-  value = data.azurerm_subnet.subnet.address_prefixes
-}

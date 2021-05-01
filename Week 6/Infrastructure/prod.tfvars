@@ -11,13 +11,13 @@ location = "eastus"
 
 ### Network ###
 #Vnet CIDR
-vnet_cidr = "192.168.0.0/16"
+vnet_cidr = "192.169.0.0/16"
 #Frontend subnet CIDR
-frontend_subnet_cidr = "192.168.0.0/24"
+frontend_subnet_cidr = "192.169.0.0/24"
 #Backend subnet CIDR
-backend_subnet_cidr = "192.168.1.0/24"
+backend_subnet_cidr = "192.169.1.0/24"
 #Jenkins subnet CIDR
-jenkins_subnet_cidr = "192.168.2.0/24"
+jenkins_subnet_cidr = "192.169.2.0/24"
 
 
 ### VMs ###
@@ -44,4 +44,5 @@ jenkins_provision_sript_source = "../Provisioning/jenkins_provision.sh"
 #Jenkins provision script destinations path
 jenkins_provision_sript_destination = "/home/eduardgu/jenkins_provision.sh"
 
+provision_custom_data_script_absolute_path = "../Provisioning/cert_provision.txt"
 

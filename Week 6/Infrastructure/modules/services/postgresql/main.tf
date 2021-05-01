@@ -18,7 +18,7 @@ locals{
 
 #Create Postgresql server 
 resource "azurerm_postgresql_server" "server" {
-  name                = lower("${var.name}-${local.server_name_suffix}")
+  name                = "${var.name}-${local.server_name_suffix}"
   resource_group_name = var.rg_name
   location            = var.location
 

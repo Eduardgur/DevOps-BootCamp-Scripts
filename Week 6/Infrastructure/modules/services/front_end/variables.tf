@@ -64,5 +64,8 @@ variable "provision_script" {
   type = list(string)
 }
 
-
+variable "provision_custom_data_script_absolute_path" {
+  description = "Absolute path to the custome data script "
+  type = string
+}
 

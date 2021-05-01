@@ -1,6 +1,20 @@
+data "azurerm_network_interface" "nic" {
+  name = azurerm_network_interface.nic.*.name
+  resource_group_name = var.rg_name
+}
+
+data "azurerm_virtual_machine" "vm" {
+  name = azurerm_linux_virtual_machine.vm.*.name
+  resource_group_name = var.rg_name
+}
+
 #Outputs Nics Id
 output "nic_id" {
-  value = [for nic in azurerm_network_interface.nic : nic.id]
+  value = data.azurerm_network_interface.nic.*.id
+}
+
+output "nic_name" {
+  value = [for nic in azurerm_network_interface.nic : nic.name]
 }
 
 output "nic_ip_configuration_name" {
@@ -8,9 +22,9 @@ output "nic_ip_configuration_name" {
 }
 
 output "private_ip" {
-  value = [for nic in azurerm_network_interface.nic : nic.private_ip_address]
+  value = ["${data.azurerm_network_interface.nic.*.private_ip_address}"]
 }
 
 output "name" {
-  value = [for vm in azurerm_linux_virtual_machine.vm : vm.name]
+  value = data.azurerm_virtual_machine.vm.*.name
 }
