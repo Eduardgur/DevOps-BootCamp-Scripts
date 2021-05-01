@@ -3,7 +3,8 @@
 user="jenkins"
 password="QWer1234Q"
 pass=$(perl -e 'print crypt($ARGV[0], "salt")' $password)
-useradd -s /bin/bash -m -p $pass $user
+sudo useradd -s /bin/bash -m -p $pass $user
+sudo usermod -aG sudo $user
 
 sudo add-apt-repository universe
 sudo apt update -y
