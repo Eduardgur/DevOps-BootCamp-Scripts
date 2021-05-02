@@ -1,0 +1,89 @@
+pipeline {
+    
+    agent {
+        label 'ansible'
+    }
+    
+    enviroment {
+        DEV_DB_IP = 192.168.1.4
+        PROD_DB_IP = 192.169.1.4
+        DB_NAME = "eduardgu@dev-weighttracker-backend-postgers-server"
+    }
+    
+    stages {
+        
+        stage ('Get vars') {
+
+            options {
+                azureKeyVault(
+                  credentialID: 'azure-service-principal', 
+                  keyVaultURL: 'https://wt-vault.vault.azure.net/', 
+                  secrets: [
+                      [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
+                      [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+                      [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
+                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
+                      [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
+                  ]
+                )
+            }
+            
+            steps {
+                echo "${env.FRONT_PORT}"
+                echo "${env.OKTA_URL}"
+                echo "${env.OKTA_ID}"
+                echo "${env.OKTA_SECRET}"
+                echo "${env.DB_PASS}"
+                echo "${env.DB_USER}"
+                echo "${env.DB_PORT}"
+                
+                // // Tried to get data from azure but cant parse json
+                // script {
+                //     def db_ednpoint = sh "az network private-endpoint show --name DEV-WeightTracker-BackEnd-Private-Endpoint --resource-group DEV-WeightTracker-ResourceGroup"
+                //     def endpoint_json = readJSON text: "${db_ednpoint}"
+                //     def db_ip = "${endpoint_json}.customDnsConfigs[0].ip_address"
+                //     echo "${endpoint_json}"
+                // }
+                
+            }
+        }
+        
+        stage ('Ansible get playbooks') {
+            steps {
+                dir("Dev") {
+                    git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
+                }
+            }
+        }
+        
+        stage ('Deploy on Dev enviromnet') {
+            steps {
+                dir("Dev") {
+                    sh 'ansible-playbook dev.yml --extra-vars "${}'
+                }
+            }
+        }
+
+        stage('Dev approval'){
+          steps{
+                input "Should deliver to prod ? "
+          }
+        }
+        ///////////////////////////////
+        // stage('Dev approval'){
+        //   steps{
+        //         input "Should deliver to prod ? "
+        //         sh 'ansible-playbook prod.yml'
+        //   }
+        // }
+        
+    }
+    // post {
+    //     cleanup {
+    //         sh "rm -R -f ./**"
+    //     }
+    // }
+
+}
