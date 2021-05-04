@@ -22,20 +22,7 @@ pipeline {
             }
 
             steps {
-                // withAzureKeyvault(
-                //     azureKeyVaultSecrets: [
-                //         [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret']
-                //     ],
-                //     credentialIDOverride: 'azure-service-principal',
-                //     keyVaultURLOverride: 'https://wt-vault.vault.azure.net/secrets/') {
-                //         // echo "${env.FRONT_PORT}"
-                //         // echo "${env.DB_PORT}"
-                // }
-                echo "${env.OKTA_URL}"
-                echo "${env.OKTA_ID}"
-                echo "${env.OKTA_SECRET}"
-                echo "${env.DB_PASS}"
-                echo "${env.DB_USER}"
+
             }
         }
 
@@ -47,18 +34,22 @@ pipeline {
 
         stage('Get Dependecies') {
             steps {
-                sh 'pwd'
-                sh 'ls -ls'
                 sh 'npm install'
             }
         }
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t eduardgu/weighttracker:latest'
+                sh 'rm -rf .git .gitignore README.md'
+                sh 'docker build -t eduardgu/weighttracker:1.0 .'
             }
         }
 
+        stage('Push Image') {
+            steps {
+                sh 'docker push eduardgu/weighttracker:1.0'
+            }
+        }
     // stage('Build') {
     //     steps {
     //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
