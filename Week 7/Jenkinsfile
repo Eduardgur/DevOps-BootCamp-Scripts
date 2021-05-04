@@ -1,41 +1,49 @@
 pipeline {
-
     agent {
         label 'ansible'
     }
 
     stages {
+        stage('Get Vars') {
+            // options {
+            //     azureKeyVault(
+            //       credentialID: 'azure-service-principal',
+            //       keyVaultURL: 'https://wt-vault.vault.azure.net/',
+            //       secrets: [
+            //           [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
+            //           [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+            //           [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+            //           [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+            //           [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
+            //           [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
+            //           [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
+            //       ]
+            //     )
+            // }
 
-         stage('Get Vars') {
             steps {
-                azureKeyVault(
-                  credentialID: 'azure-service-principal', 
-                  keyVaultURL: 'https://wt-vault.vault.azure.net/', 
-                  secrets: [
-                      [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
-                      [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
-                      [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
-                      [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
-                      [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
-                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
-                      [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
-                  ]
-                )
-
-                echo "${env.FRONT_PORT}"
-                echo "${env.OKTA_URL}"
-                echo "${env.OKTA_ID}"
-                echo "${env.OKTA_SECRET}"
-                echo "${env.DB_PASS}"
-                echo "${env.DB_USER}"
-                echo "${env.DB_PORT}"
+                withAzureKeyvault(
+                    azureKeyVaultSecrets: [
+                        [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret', version: '1']
+                    ],
+                    credentialIDOverride: 'azure-service-principal',
+                    keyVaultURLOverride: 'https://wt-vault.vault.azure.net/') {
+                        echo "${env.FRONT_PORT}"
+                        echo "${env.OKTA_URL}"
+                        echo "${env.OKTA_ID}"
+                        echo "${env.OKTA_SECRET}"
+                        echo "${env.DB_PASS}"
+                        echo "${env.DB_USER}"
+                        echo "${env.DB_PORT}"
+                // some block
+                }
             }
         }
 
         stage('Clone Git') {
-           steps {
-               git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
-           }
+            steps {
+                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+            }
         }
 
         stage('Get Dependecies') {
@@ -51,20 +59,20 @@ pipeline {
                 sh 'docker build -t eduardgu/weighttracker:latest'
             }
         }
-        
-        // stage('Build') {
-        //     steps {
-        //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
-        //     }
-        // }
+
+    // stage('Build') {
+    //     steps {
+    //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
+    //     }
+    // }
     }
 
-    // post {
-        // success {
-        //     azureUpload containerName: 'jenkinsblob', doNotUploadIndividualFiles: true, filesPath: '**/*', excludeFilesPath: '.git, .gitignore, README.md, Jenkinsfile' , storageCredentialId: 'AzureStorage', storageType: 'blobstorage', uploadArtifactsOnlyIfSuccessful: true, uploadZips: true
-        // }
-        // cleanup {
-        //     sh "rm -R -f ./**"
-        // }
-    // }
+// post {
+// success {
+//     azureUpload containerName: 'jenkinsblob', doNotUploadIndividualFiles: true, filesPath: '**/*', excludeFilesPath: '.git, .gitignore, README.md, Jenkinsfile' , storageCredentialId: 'AzureStorage', storageType: 'blobstorage', uploadArtifactsOnlyIfSuccessful: true, uploadZips: true
+// }
+// cleanup {
+//     sh "rm -R -f ./**"
+// }
+// }
 }
