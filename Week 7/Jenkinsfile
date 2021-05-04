@@ -1,5 +1,5 @@
 pipeline {
-    
+
     agent {
         label 'ansible'
     }
@@ -21,31 +21,37 @@ pipeline {
                       [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
                   ]
                 )
-            }
 
-            echo "${env.FRONT_PORT}"
-            echo "${env.OKTA_URL}"
-            echo "${env.OKTA_ID}"
-            echo "${env.OKTA_SECRET}"
-            echo "${env.DB_PASS}"
-            echo "${env.DB_USER}"
-            echo "${env.DB_PORT}"
+                echo "${env.FRONT_PORT}"
+                echo "${env.OKTA_URL}"
+                echo "${env.OKTA_ID}"
+                echo "${env.OKTA_SECRET}"
+                echo "${env.DB_PASS}"
+                echo "${env.DB_USER}"
+                echo "${env.DB_PORT}"
+            }
         }
 
-        stage('Get Resources') {
+        stage('Clone Git') {
            steps {
                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
            }
         }
 
-        stage('Build') {
+        stage('Get Dependecies') {
             steps {
                 sh 'pwd'
                 sh 'ls -ls'
                 sh 'npm install'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
                 sh 'docker build -t eduardgu/weighttracker:latest'
             }
         }
+        
         // stage('Build') {
         //     steps {
         //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
