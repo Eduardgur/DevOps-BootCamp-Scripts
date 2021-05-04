@@ -10,19 +10,18 @@ pipeline {
                   credentialID: 'azure-service-principal',
                   keyVaultURL: 'https://wt-vault.vault.azure.net/',
                   secrets: [
-                      [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
                       [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
                       [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
                       [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
                       [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
-                      [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
                   ]
                 )
             }
 
             steps {
-
+                sh 'echo ${env.OKTA_URL}'
+                sh 'echo ${OKTA_URL}'
             }
         }
 
