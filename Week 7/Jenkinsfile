@@ -46,7 +46,9 @@ pipeline {
 
         stage('Push Image') {
             steps {
-                sh 'sudo docker push eduardgu/weighttracker:1.0'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'sudo docker push eduardgu/weighttracker:1.0 -u $USERNAME -p $PASSWORD'
+                }
             }
         }
     // stage('Build') {
