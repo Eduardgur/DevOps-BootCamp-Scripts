@@ -24,16 +24,16 @@ pipeline {
             steps {
                 withAzureKeyvault(
                     azureKeyVaultSecrets: [
-                        [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret', version: '1']
+                        [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret']
                     ],
                     credentialIDOverride: 'azure-service-principal',
-                    keyVaultURLOverride: 'https://wt-vault.vault.azure.net/') {
+                    keyVaultURLOverride: 'https://wt-vault.vault.azure.net/secrets/') {
                         echo "${env.FRONT_PORT}"
-                        echo "${env.OKTA_URL}"
-                        echo "${env.OKTA_ID}"
-                        echo "${env.OKTA_SECRET}"
-                        echo "${env.DB_PASS}"
-                        echo "${env.DB_USER}"
+                        // echo "${env.OKTA_URL}"
+                        // echo "${env.OKTA_ID}"
+                        // echo "${env.OKTA_SECRET}"
+                        // echo "${env.DB_PASS}"
+                        // echo "${env.DB_USER}"
                         echo "${env.DB_PORT}"
                 // some block
                 }
