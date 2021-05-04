@@ -1,8 +1,11 @@
 pipeline {
+    
     agent {
         label 'ansible'
     }
+
     stages {
+
          stage('Get Vars') {
             steps {
                 azureKeyVault(
@@ -33,6 +36,7 @@ pipeline {
            steps {
                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
            }
+        }
 
         stage('Build') {
             steps {
@@ -42,13 +46,11 @@ pipeline {
                 sh 'docker build -t eduardgu/weighttracker:latest'
             }
         }
-
         // stage('Build') {
         //     steps {
         //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
         //     }
         // }
-        
     }
 
     // post {
