@@ -20,8 +20,8 @@ pipeline {
             }
 
             steps {
-                sh 'echo ${env.OKTA_URL}'
-                sh 'echo ${OKTA_URL}'
+                sh "echo $env.OKTA_URL"
+                sh "echo $OKTA_URL"
             }
         }
 
