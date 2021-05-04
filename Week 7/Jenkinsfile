@@ -22,11 +22,7 @@ pipeline {
             }
 
             steps {
-                echo "${env.OKTA_URL}"
-                echo "${env.OKTA_ID}"
-                echo "${env.OKTA_SECRET}"
-                echo "${env.DB_PASS}"
-                echo "${env.DB_USER}"
+
             }
         }
 
@@ -38,21 +34,20 @@ pipeline {
 
         stage('Get Dependecies') {
             steps {
-                sh 'pwd'
-                sh 'ls -ls'
                 sh 'npm install'
             }
         }
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t eduardgu/weighttracker:latest'
+                sh 'rm -rf .git .gitignore README.md'
+                sh 'docker build -t eduardgu/weighttracker:1.0 .'
             }
         }
 
         stage('Push Image') {
             steps {
-                sh 'docker push eduardgu/weighttracker:latest'
+                sh 'docker push eduardgu/weighttracker:1.0'
             }
         }
     // stage('Build') {
