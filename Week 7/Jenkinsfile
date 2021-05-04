@@ -5,38 +5,37 @@ pipeline {
 
     stages {
         stage('Get Vars') {
-            // options {
-            //     azureKeyVault(
-            //       credentialID: 'azure-service-principal',
-            //       keyVaultURL: 'https://wt-vault.vault.azure.net/',
-            //       secrets: [
-            //           [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
-            //           [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
-            //           [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
-            //           [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
-            //           [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
-            //           [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
-            //           [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
-            //       ]
-            //     )
-            // }
+            options {
+                azureKeyVault(
+                  credentialID: 'azure-service-principal',
+                  keyVaultURL: 'https://wt-vault.vault.azure.net/',
+                  secrets: [
+                      [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
+                      [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+                      [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
+                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
+                      [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
+                  ]
+                )
+            }
 
             steps {
-                withAzureKeyvault(
-                    azureKeyVaultSecrets: [
-                        [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret']
-                    ],
-                    credentialIDOverride: 'azure-service-principal',
-                    keyVaultURLOverride: 'https://wt-vault.vault.azure.net/secrets/') {
-                        echo "${env.FRONT_PORT}"
-                        // echo "${env.OKTA_URL}"
-                        // echo "${env.OKTA_ID}"
-                        // echo "${env.OKTA_SECRET}"
-                        // echo "${env.DB_PASS}"
-                        // echo "${env.DB_USER}"
-                        echo "${env.DB_PORT}"
-                // some block
-                }
+                // withAzureKeyvault(
+                //     azureKeyVaultSecrets: [
+                //         [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret']
+                //     ],
+                //     credentialIDOverride: 'azure-service-principal',
+                //     keyVaultURLOverride: 'https://wt-vault.vault.azure.net/secrets/') {
+                //         // echo "${env.FRONT_PORT}"
+                //         // echo "${env.DB_PORT}"
+                // }
+                echo "${env.OKTA_URL}"
+                echo "${env.OKTA_ID}"
+                echo "${env.OKTA_SECRET}"
+                echo "${env.DB_PASS}"
+                echo "${env.DB_USER}"
             }
         }
 
