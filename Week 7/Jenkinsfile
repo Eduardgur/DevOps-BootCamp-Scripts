@@ -40,13 +40,13 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh 'rm -rf .git .gitignore README.md'
-                sh 'docker build -t eduardgu/weighttracker:1.0 .'
+                sh 'sudo docker build -t eduardgu/weighttracker:1.0 .'
             }
         }
 
         stage('Push Image') {
             steps {
-                sh 'docker push eduardgu/weighttracker:1.0'
+                sh 'sudo docker push eduardgu/weighttracker:1.0'
             }
         }
     // stage('Build') {
