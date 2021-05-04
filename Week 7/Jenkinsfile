@@ -1,8 +1,11 @@
 pipeline {
+
     agent {
         label 'ansible'
     }
+
     stages {
+
          stage('Get Vars') {
             steps {
                 azureKeyVault(
@@ -18,47 +21,50 @@ pipeline {
                       [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
                   ]
                 )
-            }
 
-            echo "${env.FRONT_PORT}"
+                echo "${env.FRONT_PORT}"
                 echo "${env.OKTA_URL}"
                 echo "${env.OKTA_ID}"
                 echo "${env.OKTA_SECRET}"
                 echo "${env.DB_PASS}"
                 echo "${env.DB_USER}"
                 echo "${env.DB_PORT}"
-        }
-
-        stages {
-         stage('Get Resources') {
-            steps {
-                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
             }
         }
 
-        stage('Build') {
+        stage('Clone Git') {
+           steps {
+               git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+           }
+        }
+
+        stage('Get Dependecies') {
             steps {
                 sh 'pwd'
                 sh 'ls -ls'
                 sh 'npm install'
-                sh 'docker build -t eduardgu/weighttracker:latest'
             }
         }
 
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t eduardgu/weighttracker:latest'
+            }
+        }
+        
         // stage('Build') {
         //     steps {
         //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
         //     }
         // }
-        
     }
 
-    post {
+    // post {
         // success {
         //     azureUpload containerName: 'jenkinsblob', doNotUploadIndividualFiles: true, filesPath: '**/*', excludeFilesPath: '.git, .gitignore, README.md, Jenkinsfile' , storageCredentialId: 'AzureStorage', storageType: 'blobstorage', uploadArtifactsOnlyIfSuccessful: true, uploadZips: true
         // }
         // cleanup {
         //     sh "rm -R -f ./**"
         // }
-    }
+    // }
 }
