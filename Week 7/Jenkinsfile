@@ -23,6 +23,8 @@ pipeline {
                   credentialID: 'azure-service-principal',
                   keyVaultURL: 'https://wt-vault.vault.azure.net/',
                   secrets: [
+                      [envVariable: 'DEV_PUBLIC_IP', name: 'DEV-PUBLIC-IP', secretType: 'Secret'],
+                      [envVariable: 'PROD_PUBLIC_IP', name: 'PROD-PUBLIC-IP', secretType: 'Secret'],
                       [envVariable: 'DEV_DB_NAME', name: 'DEV-DB-NAME', secretType: 'Secret'],
                       [envVariable: 'PROD_DB_NAME', name: 'PROD-DB-NAME', secretType: 'Secret'],
                       [envVariable: 'DEV_DB_IP', name: 'DEV-DB-IP', secretType: 'Secret'],
@@ -38,19 +40,19 @@ pipeline {
                   ]
                 )
             }
-            
+
             steps {
                 sh 'chmod +x ./create_env.sh'
 
                 sh './create_env.sh $DEV_OKTA_URL $DEV_OKTA_ID \
                     $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
-                    $DB_USER@$DEV_DB_NAME $DB_PASS'
+                    $DB_USER@$DEV_DB_NAME $DB_PASS $DEV_PUBLIC_IP'
 
                 sh 'sudo docker build -t eduardgu/weighttracker:stage .'
 
                 sh './create_env.sh $PROD_OKTA_URL $PROD_OKTA_ID \
                     $PROD_OKTA_SECRET $PROD_DB_IP $PROD_DB_NAME \
-                    $DB_USER@$PROD_DB_NAME $DB_PASS'
+                    $DB_USER@$PROD_DB_NAME $DB_PASS $PROD_PUBLIC_IP'
 
                 sh 'sudo docker build -t eduardgu/weighttracker:prod .'
             }
@@ -67,8 +69,11 @@ pipeline {
                         )
                     ]
                 ) {
-                    sh 'sudo echo "$PASSWORD" | docker login -u $USERNAME --password-stdin'
+                    sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
                     sh 'sudo docker push eduardgu/weighttracker:stage'
+
+                    sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
+                    sh 'sudo docker push eduardgu/weighttracker:prod'
                 }
             }
         }
