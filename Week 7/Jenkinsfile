@@ -40,7 +40,7 @@ pipeline {
             }
             
             steps {
-                sh 'chmod 600 ./create_env.sh'
+                sh 'chmod +x ./create_env.sh'
 
                 sh './create_env.sh $DEV_OKTA_URL $DEV_OKTA_ID \
                     $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
