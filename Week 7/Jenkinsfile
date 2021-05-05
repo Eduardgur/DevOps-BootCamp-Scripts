@@ -23,8 +23,12 @@ pipeline {
                   credentialID: 'azure-service-principal',
                   keyVaultURL: 'https://wt-vault.vault.azure.net/',
                   secrets: [
+<<<<<<< HEAD
                       [envVariable: 'DEV_PUBLIC_IP', name: 'DEV-PUBLIC-IP', secretType: 'Secret'],
                       [envVariable: 'PROD_PUBLIC_IP', name: 'PROD-PUBLIC-IP', secretType: 'Secret'],
+=======
+
+>>>>>>> 9c3da443021572ba72fc362d2f15ef59b62084b2
                       [envVariable: 'DEV_DB_NAME', name: 'DEV-DB-NAME', secretType: 'Secret'],
                       [envVariable: 'PROD_DB_NAME', name: 'PROD-DB-NAME', secretType: 'Secret'],
                       [envVariable: 'DEV_DB_IP', name: 'DEV-DB-IP', secretType: 'Secret'],
@@ -35,6 +39,9 @@ pipeline {
                       [envVariable: 'PROD_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
                       [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'PROD_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+                      [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
                       [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret']
                   ]
@@ -100,6 +107,15 @@ pipeline {
         //         sh 'ansible-playbook deplydocker.yml'
         //     }
         // }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
+                    sh 'sudo docker push eduardgu/weighttracker:1.0'
+                }
+            }
+        }
     }
 
 // post {
