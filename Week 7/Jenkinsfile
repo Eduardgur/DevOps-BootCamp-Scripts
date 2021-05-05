@@ -1,4 +1,5 @@
 pipeline {
+
     agent {
         label 'ansible'
     }
@@ -10,29 +11,40 @@ pipeline {
                   credentialID: 'azure-service-principal',
                   keyVaultURL: 'https://wt-vault.vault.azure.net/',
                   secrets: [
-                      [envVariable: 'FRONT_PORT', name: 'FRONT-PORT', secretType: 'Secret'],
-                      [envVariable: 'OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
-                      [envVariable: 'OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
-                      [envVariable: 'OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'DEV_DB_NAME', name: 'DEV-DB-NAME', secretType: 'Secret'],
+                      [envVariable: 'PROD_DB_NAME', name: 'PROD-DB-NAME', secretType: 'Secret'],
+                      [envVariable: 'DEV_DB_IP', name: 'DEV-DB-IP', secretType: 'Secret'],
+                      [envVariable: 'PROD_DB_IP', name: 'PROD-DB-IP', secretType: 'Secret'],
+                      [envVariable: 'DEV_OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+                      [envVariable: 'PROD_OKTA_URL', name: 'PROD-OKTA-URL', secretType: 'Secret'],
+                      [envVariable: 'DEV_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'PROD_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'PROD_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
                       [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
-                      [envVariable: 'DB_PORT', name: 'DB-PORT', secretType: 'Secret']
                   ]
                 )
             }
 
             steps {
-
+                sh "echo $env.OKTA_URL"
+                sh "echo $OKTA_URL"
             }
         }
 
         stage('Clone Git') {
             steps {
-                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+                git
+                    branch: 'main',
+                    changelog: false,
+                    credentialsId: 'git-ssh',
+                    poll: false,
+                    url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
             }
         }
 
-        stage('Get Dependecies') {
+        stage('Install Dependecies') {
             steps {
                 sh 'npm install'
             }
@@ -40,21 +52,63 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'rm -rf .git .gitignore README.md'
-                sh 'docker build -t eduardgu/weighttracker:1.0 .'
+                sh './create_env.sh $env.DEV_OKTA_URL $env.DEV_OKTA_ID \
+                    $env.DEV_OKTA_SECRET $env.DEV_DB_IP $env.DEV_DB_NAME \
+                    $env.DB_USER@$env.DEV_DB_NAME $env.DB_PASS'
+
+                sh 'sudo docker build -t eduardgu/weighttracker:stage .'
+
+                sh './create_env.sh $env.PROD_OKTA_URL $env.PROD_OKTA_ID \
+                    $env.PROD_OKTA_SECRET $env.PROD_DB_IP $env.PROD_DB_NAME \
+                    $env.DB_USER@$env.PROD_DB_NAME $env.DB_PASS'
+
+                sh 'sudo docker build -t eduardgu/weighttracker:prod .'
             }
         }
 
         stage('Push Image') {
             steps {
-                sh 'docker push eduardgu/weighttracker:1.0'
+                withCredentials(
+                    [
+                        usernamePassword(
+                            credentialsId: 'dockerhub-user',
+                            usernameVariable: 'USERNAME',
+                             passwordVariable: 'PASSWORD'
+                        )
+                    ]
+                ) {
+                    sh 'sudo echo "$PASSWORD" | docker login -u $USERNAME --password-stdin'
+                    sh 'sudo docker push eduardgu/weighttracker:stage'
+                }
             }
         }
-    // stage('Build') {
-    //     steps {
-    //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
-    //     }
-    // }
+
+        // Auto update Inventory
+
+        stage('Deploy to Stage') {
+            steps {
+                git
+                    branch: 'main',
+                    changelog: false,
+                    credentialsId: 'git-ssh',
+                    poll: false,
+                    url: 'git@github.com:Eduardgur/AnsibleFiles.git'
+
+                sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev "'
+            }
+        }
+
+        stage('Approval Deployment'){
+           steps{
+                input "Deploy to Production ?"
+           }
+        }
+
+        // stage('Deploy to Production') {
+        //     steps {
+        //         sh 'ansible-playbook deplydocker.yml'
+        //     }
+        // }
     }
 
 // post {
