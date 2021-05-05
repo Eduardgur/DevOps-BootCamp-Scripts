@@ -82,7 +82,7 @@ pipeline {
 
         stage('Deploy to Stage') {
             steps {
-                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
+                curl 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/deplydocker.yml' > deplydocker.yml
                 sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev"'
             }
         }
