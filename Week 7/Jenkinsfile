@@ -35,12 +35,7 @@ pipeline {
 
         stage('Clone Git') {
             steps {
-                git
-                    branch: 'main',
-                    changelog: false,
-                    credentialsId: 'git-ssh',
-                    poll: false,
-                    url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
             }
         }
 
@@ -87,13 +82,7 @@ pipeline {
 
         stage('Deploy to Stage') {
             steps {
-                git
-                    branch: 'main',
-                    changelog: false,
-                    credentialsId: 'git-ssh',
-                    poll: false,
-                    url: 'git@github.com:Eduardgur/AnsibleFiles.git'
-
+                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/AnsibleFiles.git'
                 sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev"'
             }
         }
