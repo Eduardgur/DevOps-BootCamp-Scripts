@@ -22,7 +22,7 @@ pipeline {
                       [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'PROD_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
-                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret'],
+                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret']
                   ]
                 )
             }
@@ -73,7 +73,7 @@ pipeline {
                         usernamePassword(
                             credentialsId: 'dockerhub-user',
                             usernameVariable: 'USERNAME',
-                             passwordVariable: 'PASSWORD'
+                            passwordVariable: 'PASSWORD'
                         )
                     ]
                 ) {
@@ -94,12 +94,12 @@ pipeline {
                     poll: false,
                     url: 'git@github.com:Eduardgur/AnsibleFiles.git'
 
-                sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev "'
+                sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev"'
             }
         }
 
-        stage('Approval Deployment'){
-           steps{
+        stage('Approval Deployment') {
+           steps {
                 input "Deploy to Production ?"
            }
         }
