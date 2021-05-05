@@ -40,15 +40,17 @@ pipeline {
             }
             
             steps {
-                sh './create_env.sh $env.DEV_OKTA_URL $env.DEV_OKTA_ID \
-                    $env.DEV_OKTA_SECRET $env.DEV_DB_IP $env.DEV_DB_NAME \
-                    $env.DB_USER@$env.DEV_DB_NAME $env.DB_PASS'
+                sh 'chmod 600 ./create_sh'
+
+                sh './create_sh $DEV_OKTA_URL $DEV_OKTA_ID \
+                    $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
+                    $DB_USER@$DEV_DB_NAME $DB_PASS'
 
                 sh 'sudo docker build -t eduardgu/weighttracker:stage .'
 
-                sh './create_env.sh $env.PROD_OKTA_URL $env.PROD_OKTA_ID \
-                    $env.PROD_OKTA_SECRET $env.PROD_DB_IP $env.PROD_DB_NAME \
-                    $env.DB_USER@$env.PROD_DB_NAME $env.DB_PASS'
+                sh './create_sh $PROD_OKTA_URL $PROD_OKTA_ID \
+                    $PROD_OKTA_SECRET $PROD_DB_IP $PROD_DB_NAME \
+                    $DB_USER@$PROD_DB_NAME $DB_PASS'
 
                 sh 'sudo docker build -t eduardgu/weighttracker:prod .'
             }
