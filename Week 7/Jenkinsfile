@@ -5,7 +5,19 @@ pipeline {
     }
 
     stages {
-        stage('Get Vars') {
+        stage('Clone Git') {
+            steps {
+                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+            }
+        }
+
+        stage('Install Dependecies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build Image') {
             options {
                 azureKeyVault(
                   credentialID: 'azure-service-principal',
@@ -26,26 +38,7 @@ pipeline {
                   ]
                 )
             }
-
-            steps {
-                sh "echo $env.OKTA_URL"
-                sh "echo $OKTA_URL"
-            }
-        }
-
-        stage('Clone Git') {
-            steps {
-                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
-            }
-        }
-
-        stage('Install Dependecies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build Image') {
+            
             steps {
                 sh './create_env.sh $env.DEV_OKTA_URL $env.DEV_OKTA_ID \
                     $env.DEV_OKTA_SECRET $env.DEV_DB_IP $env.DEV_DB_NAME \
