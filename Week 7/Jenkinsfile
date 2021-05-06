@@ -1,5 +1,4 @@
 pipeline {
-
     agent {
         label 'ansible'
     }
@@ -32,9 +31,9 @@ pipeline {
                       [envVariable: 'DEV_OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
                       [envVariable: 'PROD_OKTA_URL', name: 'PROD-OKTA-URL', secretType: 'Secret'],
                       [envVariable: 'DEV_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
-                      [envVariable: 'PROD_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+                      [envVariable: 'PROD_OKTA_ID', name: 'PROD-OKTA-ID', secretType: 'Secret'],
                       [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
-                      [envVariable: 'PROD_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+                      [envVariable: 'PROD_OKTA_SECRET', name: 'PROD-OKTA-SECRET', secretType: 'Secret'],
                       [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
                       [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret']
                   ]
@@ -79,6 +78,18 @@ pipeline {
         }
 
         // Auto update Inventory
+            stage('Get Inventory') {
+                steps {
+                    withCredentials([azureServicePrincipal('azure-service-principal')]) {
+                        script {
+                            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                            sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                            jsonString = 'az vn list -g DEV-WeightTracker-ResourceGroup'
+                            jsonObj = readJSON text: jsonString
+                        }
+                    }
+            }
+        }
 
         stage('Deploy to Stage') {
             steps {
@@ -87,21 +98,20 @@ pipeline {
                 sh 'curl "https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/deplydocker.yml" > deplydocker.yml'
 
                 sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev phase=staging"'
-
             }
         }
 
         stage('Approval Deployment') {
-           steps {
-                input "Deploy to Production ?"
-           }
+            steps {
+                input 'Deploy to Production ?'
+            }
         }
 
-        // stage('Deploy to Production') {
-        //     steps {
-        //         sh 'ansible-playbook deplydocker.yml'
-        //     }
-        // }
+    // stage('Deploy to Production') {
+    //     steps {
+    //         sh 'ansible-playbook deplydocker.yml'
+    //     }
+    // }
     }
 
 // post {

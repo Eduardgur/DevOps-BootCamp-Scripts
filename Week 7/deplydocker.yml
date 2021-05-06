@@ -70,3 +70,4 @@
       - "8080:8080"  
       recreate: yes
       force_kill: yes
+
