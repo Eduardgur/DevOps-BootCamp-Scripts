@@ -39,7 +39,6 @@ pipeline {
                   ]
                 )
             }
-
             steps {
                 sh 'chmod +x ./create_env.sh'
 
@@ -78,16 +77,16 @@ pipeline {
         }
 
         // Auto update Inventory
-            stage('Get Inventory') {
-                steps {
-                    withCredentials([azureServicePrincipal('azure-service-principal')]) {
-                        script {
-                            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                            sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
-                            jsonString = 'az vn list -g DEV-WeightTracker-ResourceGroup'
-                            jsonObj = readJSON text: jsonString
-                        }
+        stage('Get Inventory') {
+            steps {
+                withCredentials([azureServicePrincipal('azure-service-principal')]) {
+                    script {
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        jsonString = 'az vn list -g DEV-WeightTracker-ResourceGroup'
+                        jsonObj = readJSON text: jsonString
                     }
+                }
             }
         }
 
