@@ -85,7 +85,9 @@ pipeline {
                 sh 'curl "https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/azure_rm.ini" > azure_rm.ini'
                 sh 'curl "https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/ansible.cfg" > ansible.cfg'
                 sh 'curl "https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/deplydocker.yml" > deplydocker.yml'
-                sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev"'
+
+                sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=dev phase=staging"'
+
             }
         }
 
