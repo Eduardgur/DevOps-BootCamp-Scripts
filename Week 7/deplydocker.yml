@@ -1,10 +1,10 @@
 ---
 - name: Dev
-  hosts:  ${hosts}
+  hosts:  "{{hosts}}"
   become: true
   vars:
     default_container_name: weighttracker
-    default_container_image: eduardgu/weighttracker:${phase}
+    default_container_image: eduardgu/weighttracker:"${phase}"
     default_container_command: sleep 1d
 
   tasks:
