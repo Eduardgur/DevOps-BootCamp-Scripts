@@ -7,8 +7,8 @@
     default_container_image: eduardgu/weighttracker:"${phase}"
 
   tasks:
-    - name: Update
-      shell:  echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    - name: Switch to python3
+      shell: alias python=python3
 
     - name: Check if docker exists
       package:
@@ -18,7 +18,7 @@
       ignore_errors: yes
       register: docker_check
 
-    - name: Upgrade packages
+    - name: asd
       shell: sudo apt-get update -y && sudo apt update -y
       warn: false
 
@@ -43,9 +43,11 @@
         "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       when: not docker_check.changed
 
-    - name: Update
-      shell:  sudo apt-get update -y && sudo apt update -y
-      
+    - name: asd
+      shell: sudo apt-get update -y && sudo apt update -y
+      warn: false
+      when: not docker_check.changed
+
     - name: Install Docker
       apt:
         pkg:
@@ -55,9 +57,6 @@
         state: latest
         update_cache: true
       when: not docker_check.changed
-
-    - name: Switch to python3
-      shell: alias python=python3
 
     - name: Pull Image
       docker_image:
