@@ -7,9 +7,6 @@
     default_container_image: eduardgu/weighttracker:"${phase}"
 
   tasks:
-    - name: Switch to python3
-      shell: alias python=python3
-
     - name: Check if docker exists
       package:
         name: docker-ce
@@ -55,6 +52,12 @@
         state: latest
         update_cache: true
       when: not docker_check.changed
+
+    - name: Switch to python3
+      shell: alias python=python3
+
+    - name: check
+      shell: python -v
 
     - name: Pull Image
       docker_image:
