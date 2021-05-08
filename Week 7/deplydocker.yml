@@ -8,17 +8,6 @@
     # ansible_python_interpreter: /usr/bin/python3
 
   tasks:
-    - name: Check if docker exists
-      package:
-        name: docker-ce
-        state: present
-      check_mode: true
-      ignore_errors: yes
-      register: docker_check
-
-    # - name: Upgrade all apt packages
-    #   apt: upgrade=dist force_apt_get=yes
-
     - name: Upgrade all apt packages
       shell: apt-get update -y && apt update -y
 
@@ -32,22 +21,16 @@
           - lsb-release
         state: latest
         update_cache: true
-      #when: not docker_check.changed
 
     - name: Add Docekr GPG
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-      #when: not docker_check.changed
 
     - name: Add Docker repository 
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
-
-    # - name: Upgrade all apt packages
-    #   apt: upgrade=dist force_apt_get=yes
-      # #when: not docker_check.changed
 
     - name: Upgrade all apt packages
       shell: apt-get update -y && apt update -y
@@ -60,7 +43,6 @@
           - containerd.io
         state: latest
         update_cache: true
-      # #when: not docker_check.changed
 
     - name: Remove old containers
       shell: sudo docker container rm -vf $(sudo docker container ls -aq)
