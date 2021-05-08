@@ -59,6 +59,11 @@
 
     - name: check
       shell: python --version
+      register: py_ver
+
+    - name: Py ver
+      debug: 
+        msg: "{{ py_ver }}"
 
     - name: Pull Image
       docker_image:
