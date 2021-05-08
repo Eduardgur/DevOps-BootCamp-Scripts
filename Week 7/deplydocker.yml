@@ -15,10 +15,6 @@
       ignore_errors: yes
       register: docker_check
 
-    - name: Upgrade packages
-      shell: sudo apt-get update -y && sudo apt update -y
-      warn: false
-
     - name: Instal Docker dependencies
       apt:
         pkg:
