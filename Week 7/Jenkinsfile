@@ -46,13 +46,13 @@ pipeline {
                     $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
                     $DB_USER@$DEV_DB_NAME $DB_PASS $DEV_PUBLIC_IP'
 
-                sh 'sudo docker build --no-cache=true -t eduardgu/weighttracker:stage .'
+                sh 'sudo docker build -t eduardgu/weighttracker:stage .'
 
                 sh './create_env.sh $PROD_OKTA_URL $PROD_OKTA_ID \
                     $PROD_OKTA_SECRET $PROD_DB_IP $PROD_DB_NAME \
                     $DB_USER@$PROD_DB_NAME $DB_PASS $PROD_PUBLIC_IP'
 
-                sh 'sudo docker build --no-cache=true -t eduardgu/weighttracker:prod .'
+                sh 'sudo docker build -t eduardgu/weighttracker:prod .'
             }
         }
 
