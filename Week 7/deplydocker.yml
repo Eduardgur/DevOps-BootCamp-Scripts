@@ -8,7 +8,8 @@
     default_container_command: sleep 1d
 
   tasks:
-
+  - name: Switch to python3
+    shell: alias python=python3
 
   - name: Check if docker exists
     package:
@@ -20,6 +21,7 @@
 
   - name: Upgrade apt-get packages
     shell: apt-get update -y
+    warn: false
     when: not docker_check.changed 
 
   - name: Instal Docker dependencies
@@ -35,17 +37,17 @@
     when: not docker_check.changed 
 
   - name: Get Docekr GPG
-    shell:  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     when: not docker_check.changed 
 
   - name: Set Repository
-    shell:   echo \
-                "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-                $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    shell: echo \
+              "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     when: not docker_check.changed 
 
   - name: Upgrade all apt packages
     shell: apt-get update -y
+    warn: false
     when: not docker_check.changed 
 
   - name: Install Docker
