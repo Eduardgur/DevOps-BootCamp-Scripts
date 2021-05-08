@@ -10,11 +10,11 @@ pipeline {
             }
         }
 
-        stage('Install Dependecies') {
-            steps {
-                sh 'npm install'
-            }
-        }
+        // stage('Install Dependecies') {
+        //     steps {
+        //         sh 'npm install'
+        //     }
+        // }
 
         stage('Build Image') {
             options {
