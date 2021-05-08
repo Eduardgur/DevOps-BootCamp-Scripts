@@ -34,14 +34,16 @@
         update_cache: true
       #when: not docker_check.changed
 
-    - name: Get Docekr GPG
-      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    - name: Add Docekr GPG
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
       #when: not docker_check.changed
 
-    - name: Set Repository
-      shell: echo \
-        "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-      #when: not docker_check.changed
+    - name: Add Docker repository 
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
 
     # - name: Upgrade all apt packages
     #   apt: upgrade=dist force_apt_get=yes
