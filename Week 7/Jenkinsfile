@@ -16,65 +16,65 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
-            options {
-                azureKeyVault(
-                  credentialID: 'azure-service-principal',
-                  keyVaultURL: 'https://wt-vault.vault.azure.net/',
-                  secrets: [
-                      [envVariable: 'DEV_PUBLIC_IP', name: 'DEV-PUBLIC-IP', secretType: 'Secret'],
-                      [envVariable: 'PROD_PUBLIC_IP', name: 'PROD-PUBLIC-IP', secretType: 'Secret'],
-                      [envVariable: 'DEV_DB_NAME', name: 'DEV-DB-NAME', secretType: 'Secret'],
-                      [envVariable: 'PROD_DB_NAME', name: 'PROD-DB-NAME', secretType: 'Secret'],
-                      [envVariable: 'DEV_DB_IP', name: 'DEV-DB-IP', secretType: 'Secret'],
-                      [envVariable: 'PROD_DB_IP', name: 'PROD-DB-IP', secretType: 'Secret'],
-                      [envVariable: 'DEV_OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
-                      [envVariable: 'PROD_OKTA_URL', name: 'PROD-OKTA-URL', secretType: 'Secret'],
-                      [envVariable: 'DEV_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
-                      [envVariable: 'PROD_OKTA_ID', name: 'PROD-OKTA-ID', secretType: 'Secret'],
-                      [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
-                      [envVariable: 'PROD_OKTA_SECRET', name: 'PROD-OKTA-SECRET', secretType: 'Secret'],
-                      [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
-                      [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret']
-                  ]
-                )
-            }
-            steps {
-                sh 'chmod +x ./create_env.sh'
+        // stage('Build Image') {
+        //     options {
+        //         azureKeyVault(
+        //           credentialID: 'azure-service-principal',
+        //           keyVaultURL: 'https://wt-vault.vault.azure.net/',
+        //           secrets: [
+        //               [envVariable: 'DEV_PUBLIC_IP', name: 'DEV-PUBLIC-IP', secretType: 'Secret'],
+        //               [envVariable: 'PROD_PUBLIC_IP', name: 'PROD-PUBLIC-IP', secretType: 'Secret'],
+        //               [envVariable: 'DEV_DB_NAME', name: 'DEV-DB-NAME', secretType: 'Secret'],
+        //               [envVariable: 'PROD_DB_NAME', name: 'PROD-DB-NAME', secretType: 'Secret'],
+        //               [envVariable: 'DEV_DB_IP', name: 'DEV-DB-IP', secretType: 'Secret'],
+        //               [envVariable: 'PROD_DB_IP', name: 'PROD-DB-IP', secretType: 'Secret'],
+        //               [envVariable: 'DEV_OKTA_URL', name: 'DEV-OKTA-URL', secretType: 'Secret'],
+        //               [envVariable: 'PROD_OKTA_URL', name: 'PROD-OKTA-URL', secretType: 'Secret'],
+        //               [envVariable: 'DEV_OKTA_ID', name: 'DEV-OKTA-ID', secretType: 'Secret'],
+        //               [envVariable: 'PROD_OKTA_ID', name: 'PROD-OKTA-ID', secretType: 'Secret'],
+        //               [envVariable: 'DEV_OKTA_SECRET', name: 'DEV-OKTA-SECRET', secretType: 'Secret'],
+        //               [envVariable: 'PROD_OKTA_SECRET', name: 'PROD-OKTA-SECRET', secretType: 'Secret'],
+        //               [envVariable: 'DB_PASS', name: 'VmPass', secretType: 'Secret'],
+        //               [envVariable: 'DB_USER', name: 'VmName', secretType: 'Secret']
+        //           ]
+        //         )
+        //     }
+        //     steps {
+        //         sh 'chmod +x ./create_env.sh'
 
-                sh './create_env.sh $DEV_OKTA_URL $DEV_OKTA_ID \
-                    $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
-                    $DB_USER@$DEV_DB_NAME $DB_PASS $DEV_PUBLIC_IP'
+        //         sh './create_env.sh $DEV_OKTA_URL $DEV_OKTA_ID \
+        //             $DEV_OKTA_SECRET $DEV_DB_IP $DEV_DB_NAME \
+        //             $DB_USER@$DEV_DB_NAME $DB_PASS $DEV_PUBLIC_IP'
 
-                sh 'sudo docker build -t eduardgu/weighttracker:stage .'
+        //         sh 'sudo docker build -t eduardgu/weighttracker:stage .'
 
-                sh './create_env.sh $PROD_OKTA_URL $PROD_OKTA_ID \
-                    $PROD_OKTA_SECRET $PROD_DB_IP $PROD_DB_NAME \
-                    $DB_USER@$PROD_DB_NAME $DB_PASS $PROD_PUBLIC_IP'
+        //         sh './create_env.sh $PROD_OKTA_URL $PROD_OKTA_ID \
+        //             $PROD_OKTA_SECRET $PROD_DB_IP $PROD_DB_NAME \
+        //             $DB_USER@$PROD_DB_NAME $DB_PASS $PROD_PUBLIC_IP'
 
-                sh 'sudo docker build -t eduardgu/weighttracker:prod .'
-            }
-        }
+        //         sh 'sudo docker build -t eduardgu/weighttracker:prod .'
+        //     }
+        // }
 
-        stage('Push Image') {
-            steps {
-                withCredentials(
-                    [
-                        usernamePassword(
-                            credentialsId: 'dockerhub-user',
-                            usernameVariable: 'USERNAME',
-                            passwordVariable: 'PASSWORD'
-                        )
-                    ]
-                ) {
-                    sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
-                    sh 'sudo docker push eduardgu/weighttracker:stage'
+        // stage('Push Image') {
+        //     steps {
+        //         withCredentials(
+        //             [
+        //                 usernamePassword(
+        //                     credentialsId: 'dockerhub-user',
+        //                     usernameVariable: 'USERNAME',
+        //                     passwordVariable: 'PASSWORD'
+        //                 )
+        //             ]
+        //         ) {
+        //             sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
+        //             sh 'sudo docker push eduardgu/weighttracker:stage'
 
-                    sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
-                    sh 'sudo docker push eduardgu/weighttracker:prod'
-                }
-            }
-        }
+        //             sh 'echo "$PASSWORD" | sudo docker login -u $USERNAME --password-stdin'
+        //             sh 'sudo docker push eduardgu/weighttracker:prod'
+        //         }
+        //     }
+        // }
 
         stage('Get Inventory') {
             steps {
