@@ -16,8 +16,11 @@
       ignore_errors: yes
       register: docker_check
 
+    # - name: Upgrade all apt packages
+    #   apt: upgrade=dist force_apt_get=yes
+
     - name: Upgrade all apt packages
-      apt: upgrade=dist force_apt_get=yes
+      shell: apt-get update -y && apt update -y
 
     - name: Instal Docker dependencies
       apt:
@@ -40,9 +43,12 @@
         "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       #when: not docker_check.changed
 
-    - name: Upgrade all apt packages
-      apt: upgrade=dist force_apt_get=yes
+    # - name: Upgrade all apt packages
+    #   apt: upgrade=dist force_apt_get=yes
       # #when: not docker_check.changed
+
+    - name: Upgrade all apt packages
+      shell: apt-get update -y && apt update -y
 
     - name: Install Docker
       apt:
@@ -58,20 +64,20 @@
     #   shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
     #   ignore_errors: yes
 
+    - name: Remove old containers
+      shell: sudo docker container rm -vf $(sudo docker container ls -aq)
+      ignore_errors: yes  
+
     - name: Remove old images  
       shell: sudo docker image rmi -f $(sudo docker image ls -aq)
       ignore_errors: yes
-
-    - name: Remove old containers
-      shell: sudo docker container rm -vf $(sudo docker container ls -aq)
-      ignore_errors: yes      
-
+    
     - name: asd
       debug:
         msg: "{{ phase }} {{ default_container_name }} {{ default_container_image }} "
 
     - name: Run Image  
-      shell: "sudo docker run --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}"
+      shell: "sudo docker run -d --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}"
     # - name: Pull Image
     #   docker_image:
     #     name: "{{ default_container_image }}"
