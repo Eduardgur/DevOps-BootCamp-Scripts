@@ -8,8 +8,8 @@
 
   tasks:
     - name: Update
-      shell:  sudo apt-get update -y && sudo apt update -y
-      
+      shell:  echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
     - name: Check if docker exists
       package:
         name: docker-ce
