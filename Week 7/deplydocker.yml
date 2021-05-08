@@ -68,10 +68,10 @@
 
     - name: asd
       debug:
-        msg: {{ phase }}
+        msg: "{{ phase }} {{ default_container_name }} {{ default_container_image }} "
 
     - name: Run Image  
-      shell: sudo docker run --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}
+      shell: "sudo docker run --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}"
     # - name: Pull Image
     #   docker_image:
     #     name: "{{ default_container_image }}"
