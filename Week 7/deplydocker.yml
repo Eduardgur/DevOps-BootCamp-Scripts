@@ -60,10 +60,6 @@
         update_cache: true
       # #when: not docker_check.changed
 
-    # - name: Switch to python3
-    #   shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
-    #   ignore_errors: yes
-
     - name: Remove old containers
       shell: sudo docker container rm -vf $(sudo docker container ls -aq)
       ignore_errors: yes  
