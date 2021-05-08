@@ -19,7 +19,7 @@
       register: docker_check
 
     - name: asd
-      shell: sudo apt-get update -y && sudo apt update -y
+      shell: echo asd
       warn: false
 
     - name: Instal Docker dependencies
@@ -44,7 +44,7 @@
       when: not docker_check.changed
 
     - name: asd
-      shell: sudo apt-get update -y && sudo apt update -y
+      shell: echo asd
       warn: false
       when: not docker_check.changed
 
