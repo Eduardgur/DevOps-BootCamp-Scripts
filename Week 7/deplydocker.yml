@@ -56,9 +56,11 @@
 
     - name: Switch to python3
       shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
+      ignore_errors: yes
 
     - name: Remove old containers and images  
       shell: sudo docker container rm $(sudo docker container ls -aq)
+      ignore_errors: yes
 
     - name: Run Image  
       shell: sudo docker run -d --name app -p 8080:8080 {{ image_name }}
