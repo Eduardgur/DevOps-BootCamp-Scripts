@@ -9,8 +9,6 @@
 
   tasks:
 
-  - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
 
   - name: Check if docker exists
     package:
@@ -20,12 +18,9 @@
     ignore_errors: yes
     register: docker_check
 
-  - name: Get Docekr GPG
-    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  - name: Upgrade apt-get packages
+    shell: apt-get update -y
     when: not docker_check.changed 
-
-  - debug:
-      msg: docker_check
 
   - name: Instal Docker dependencies
     apt:
@@ -39,6 +34,10 @@
       update_cache: true
     when: not docker_check.changed 
 
+  - name: Get Docekr GPG
+    shell:  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    when: not docker_check.changed 
+
   - name: Set Repository
     shell:   echo \
                 "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
@@ -46,7 +45,8 @@
     when: not docker_check.changed 
 
   - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
+    shell: apt-get update -y
+    when: not docker_check.changed 
 
   - name: Install Docker
     apt:
