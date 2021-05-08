@@ -10,6 +10,7 @@
   tasks:
     - name: Upgrade all apt packages
       shell: apt-get update -y && apt update -y
+      ignore_errors: yes  
 
     - name: Instal Docker dependencies
       apt:
@@ -34,6 +35,7 @@
 
     - name: Upgrade all apt packages
       shell: apt-get update -y && apt update -y
+      ignore_errors: yes  
 
     - name: Install Docker
       apt:
@@ -53,5 +55,5 @@
       ignore_errors: yes
     
     - name: Run Image  
-      shell: sudo docker run -d --name {{ default_container_name }} -p 8080:8080 --restart unless-stopped {{ default_container_image }}
+      shell: sudo docker run -d --name {{ default_container_name }} -p 0.0.0.0:8080:8080 --restart unless-stopped {{ default_container_image }}
 
