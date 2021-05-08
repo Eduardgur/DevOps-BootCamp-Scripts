@@ -7,6 +7,9 @@
     default_container_image: eduardgu/weighttracker:"${phase}"
 
   tasks:
+    - name: Update
+      shell:  sudo apt-get update -y && sudo apt update -y
+      
     - name: Check if docker exists
       package:
         name: docker-ce
@@ -14,6 +17,10 @@
       check_mode: true
       ignore_errors: yes
       register: docker_check
+
+    - name: Upgrade packages
+      shell: sudo apt-get update -y && sudo apt update -y
+      warn: false
 
     - name: Instal Docker dependencies
       apt:
@@ -36,11 +43,9 @@
         "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       when: not docker_check.changed
 
-    - name: Upgrade packages
-      shell: sudo apt-get update -y && sudo apt update -y
-      warn: false
-      when: not docker_check.changed
-
+    - name: Update
+      shell:  sudo apt-get update -y && sudo apt update -y
+      
     - name: Install Docker
       apt:
         pkg:
