@@ -1,7 +1,7 @@
 locals{
     name= "BackEnd"
     nsg_rule_db_name                        = "Allow-Postgres-All"
-    nsg_rule_db_priority                    = 103
+    nsg_rule_db_priority                    = 123
     nsg_rule_db_direction                   = "Inbound"
     nsg_rule_db_access                      = "Allow"
     nsg_rule_db_protocol                    = "Tcp"

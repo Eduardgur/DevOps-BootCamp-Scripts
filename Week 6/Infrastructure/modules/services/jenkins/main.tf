@@ -1,7 +1,7 @@
 locals {
     name = "Jenkins"
     nsg_rule_http_name                        = "Allow-HTTP-All"
-    nsg_rule_http_priority                    = 101
+    nsg_rule_http_priority                    = 111
     nsg_rule_http_direction                   = "Inbound"
     nsg_rule_http_access                      = "Allow"
     nsg_rule_http_protocol                    = "Tcp"
@@ -9,7 +9,7 @@ locals {
     nsg_rule_http_source_port_range           = "*"
     nsg_rule_http_destination_port_range      = "8080"
     nsg_rule_ssh_name                        = "Allow-SSH-All"
-    nsg_rule_ssh_priority                    = 102
+    nsg_rule_ssh_priority                    = 112
     nsg_rule_ssh_direction                   = "Inbound"
     nsg_rule_ssh_access                      = "Allow"
     nsg_rule_ssh_protocol                    = "Tcp"

@@ -86,6 +86,8 @@ pipeline {
                 
 
                 sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=stage phase=stage"'
+
+                // httpRequest authentication: "$DEV_OKTA_SECRET", contentType: "APPLICATION_JSON", httpMode: "PUT", requestBody: JsonOutput.toJson(VALUE), url: 'https://{{ DEV_OKTA_URL }}/api/v1/apps/{{ DEV_OKTA_ID }}'
             }
         }
 
