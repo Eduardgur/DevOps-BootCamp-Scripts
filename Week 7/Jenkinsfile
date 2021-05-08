@@ -4,18 +4,18 @@ pipeline {
     }
 
     stages {
-        stage('Clone Git') {
-            steps {
-                git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
-            }
-        }
+        // stage('Clone Git') {
+        //     steps {
+        //         git branch: 'main', changelog: false, credentialsId: 'git-ssh', poll: false, url: 'git@github.com:Eduardgur/WeightTrackerTst.git'
+        //     }
+        // }
 
-        stage('Install Dependecies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
+        // stage('Install Dependecies') {
+        //     steps {
+        //         sh 'npm install'
+        //     }
+        // }
+// 
         // stage('Build Image') {
         //     options {
         //         azureKeyVault(
