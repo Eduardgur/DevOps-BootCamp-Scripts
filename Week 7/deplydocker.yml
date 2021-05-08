@@ -63,7 +63,7 @@
     #   ignore_errors: yes
 
     - name: Run Image  
-      shell: sudo docker run -d --name app -p 8080:8080 {{ image_name }}
+      shell: sudo docker run -d --name {{ default_container_name }} -p 8080:8080 {{ image_namdefault_container_imagee }}
     # - name: Pull Image
     #   docker_image:
     #     name: "{{ default_container_image }}"
