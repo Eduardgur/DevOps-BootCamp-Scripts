@@ -66,8 +66,12 @@
       shell: sudo docker container rm -vf $(sudo docker container ls -aq)
       ignore_errors: yes      
 
+    - name: asd
+      debug:
+        msg: {{ phase }}
+
     - name: Run Image  
-      shell: sudo docker run -d --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}
+      shell: sudo docker run --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}
     # - name: Pull Image
     #   docker_image:
     #     name: "{{ default_container_image }}"
