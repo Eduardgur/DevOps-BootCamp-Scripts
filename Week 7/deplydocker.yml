@@ -58,9 +58,9 @@
     #   shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
     #   ignore_errors: yes
 
-    # - name: Remove old containers and images  
-    #   shell: sudo docker container rm $(sudo docker container ls -aq)
-    #   ignore_errors: yes
+    - name: Remove old containers and images  
+      shell: sudo docker container rm -vf $(sudo docker container ls -aq) && sudo docker rmi -f $(sudo docker images ls -aq)
+      ignore_errors: yes
 
     - name: Run Image  
       shell: sudo docker run -d --name {{ default_container_name }} -p 8080:8080 {{ default_container_image }}
