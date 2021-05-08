@@ -8,10 +8,6 @@
     # ansible_python_interpreter: /usr/bin/python3
 
   tasks:
-    - name: Upgrade all apt packages
-      shell: apt-get update -y && apt update -y
-      ignore_errors: yes  
-
     - name: Instal Docker dependencies
       apt:
         pkg:
@@ -32,10 +28,6 @@
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
-
-    - name: Upgrade all apt packages
-      shell: apt-get update -y && apt update -y
-      ignore_errors: yes  
 
     - name: Install Docker
       apt:
