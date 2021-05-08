@@ -17,6 +17,7 @@
       name: docker-ce
       state: present
     check_mode: true
+    ignore_errors: yes
     register: docker_check
 
   - name: Get Docekr GPG
