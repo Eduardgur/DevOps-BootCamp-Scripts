@@ -5,7 +5,6 @@
   vars:
     default_container_name: weighttracker
     default_container_image: eduardgu/weighttracker:"${phase}"
-    default_container_command: sleep 1d
 
   tasks:
   - name: Switch to python3
@@ -20,9 +19,8 @@
     register: docker_check
 
   - name: Upgrade apt-get packages
-    shell: apt-get update -y
+    shell: sudo apt-get update -y && sudo apt update -y
     warn: false
-    when: not docker_check.changed 
 
   - name: Instal Docker dependencies
     apt:
@@ -46,7 +44,7 @@
     when: not docker_check.changed 
 
   - name: Upgrade all apt packages
-    shell: apt-get update -y
+    shell: sudo apt-get update -y && sudo apt update -y
     warn: false
     when: not docker_check.changed 
 
