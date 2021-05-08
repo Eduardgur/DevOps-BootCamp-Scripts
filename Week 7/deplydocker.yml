@@ -79,7 +79,7 @@ pipeline {
         stage('Get Inventory') {
             steps {
                 sh "curl -H \"Cache-Control: no-cache\" 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/get_inventory.sh' > get_inventory.sh"
-                sh "sudo chown +x get_inventory.sh"
+                sh "sudo chown +x ./get_inventory.sh"
                 sh './get_inventory.sh DEV-WeightTracker-ResourceGroup PROD-WeightTracker-ResourceGroup'
             }
         }
