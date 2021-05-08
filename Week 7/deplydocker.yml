@@ -5,7 +5,7 @@
   vars:
     default_container_name: weighttracker
     default_container_image: eduardgu/weighttracker:"{{ phase }}"
-    ansible_python_interpreter: /usr/bin/python3
+    # ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Check if docker exists
@@ -54,9 +54,9 @@
         update_cache: true
       # #when: not docker_check.changed
 
-    - name: Switch to python3
-      shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
-      ignore_errors: yes
+    # - name: Switch to python3
+    #   shell: sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && sudo update-alternatives  --set python /usr/bin/python3.6
+    #   ignore_errors: yes
 
     # - name: Remove old containers and images  
     #   shell: sudo docker container rm $(sudo docker container ls -aq)
