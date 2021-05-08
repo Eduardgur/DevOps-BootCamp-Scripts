@@ -4,7 +4,7 @@
   become: true
   vars:
     default_container_name: weighttracker
-    default_container_image: eduardgu/weighttracker:"${phase}"
+    default_container_image: eduardgu/weighttracker:"{{ phase }}"
     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
