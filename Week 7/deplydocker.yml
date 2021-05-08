@@ -18,9 +18,8 @@
       ignore_errors: yes
       register: docker_check
 
-    - name: asd
-      shell: echo asd
-      warn: false
+    - name: Upgrade all apt packages
+      apt: upgrade=dist force_apt_get=yes
 
     - name: Instal Docker dependencies
       apt:
@@ -43,9 +42,8 @@
         "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       when: not docker_check.changed
 
-    - name: asd
-      shell: echo asd
-      warn: false
+    - name: Upgrade all apt packages
+      apt: upgrade=dist force_apt_get=yes
       when: not docker_check.changed
 
     - name: Install Docker
