@@ -106,12 +106,9 @@ pipeline {
         }
     }
 
-// post {
-// success {
-//     azureUpload containerName: 'jenkinsblob', doNotUploadIndividualFiles: true, filesPath: '**/*', excludeFilesPath: '.git, .gitignore, README.md, Jenkinsfile' , storageCredentialId: 'AzureStorage', storageType: 'blobstorage', uploadArtifactsOnlyIfSuccessful: true, uploadZips: true
-// }
-// cleanup {
-//     sh "rm -R -f ./**"
-// }
-// }
+    post {
+        cleanup {
+            sh "rm -R -f ./**"
+        }
+    }
 }
