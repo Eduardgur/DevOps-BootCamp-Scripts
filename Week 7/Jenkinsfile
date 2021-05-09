@@ -75,7 +75,7 @@ pipeline {
         stage('Get Inventory') {
             steps {
                 sh "curl -H \"Cache-Control: no-cache\" 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/get_inventory.sh' > get_inventory.sh"
-                sh "sudo chmod +x ./get_inventory.sh"
+                sh 'sudo chmod +x ./get_inventory.sh'
                 sh './get_inventory.sh DEV-WeightTracker-ResourceGroup PROD-WeightTracker-ResourceGroup'
             }
         }
@@ -85,11 +85,7 @@ pipeline {
                 sh "curl -H \"Cache-Control: no-cache\" 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/azure_rm.ini' > azure_rm.ini"
                 sh "curl -H \"Cache-Control: no-cache\" 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/ansible.cfg' > ansible.cfg"
                 sh "curl -H \"Cache-Control: no-cache\" 'https://raw.githubusercontent.com/Eduardgur/DevOps-BootCamp-Scripts/main/Week%207/deplydocker.yml' > deplydocker.yml"
-                
-
                 sh 'ansible-playbook deplydocker.yml --extra-vars "hosts=stage phase=stage"'
-
-                // httpRequest authentication: "$DEV_OKTA_SECRET", contentType: "APPLICATION_JSON", httpMode: "PUT", requestBody: JsonOutput.toJson(VALUE), url: 'https://{{ DEV_OKTA_URL }}/api/v1/apps/{{ DEV_OKTA_ID }}'
             }
         }
 
@@ -108,7 +104,7 @@ pipeline {
 
     post {
         cleanup {
-            sh "rm -R -f ./**"
+            sh 'rm -R -f ./**'
         }
     }
 }
