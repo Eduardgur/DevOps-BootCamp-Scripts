@@ -8,7 +8,7 @@
     # ansible_python_interpreter: /usr/bin/python3
 
   tasks:
-    - name: Instal Docker dependencies
+    - name: Install Docker dependencies
       apt:
         pkg:
           - apt-transport-https
