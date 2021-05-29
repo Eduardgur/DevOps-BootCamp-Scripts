@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weighttracker-deployment
+  namespace: weighttracker-space
+spec:
+  selector:
+    matchLabels:
+      app: weighttracker
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: weighttracker
+    spec:
+      containers:
+        - name: weighttracker
+          image: eduardgu/weighttracker:kube
+          ports:
+            - containerPort: 8080
+          envFrom:
+          - configMapRef:
+              name: weighttracker-configmap
+          - secretRef:
+              name: postgresql-secret

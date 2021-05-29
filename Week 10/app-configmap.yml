@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: weighttracker-configmap
+  namespace: weighttracker-space
+data:
+  PORT: "8080"
+  HOST: "0.0.0.0"
+  NODE_ENV: development
+  HOST_URL: http://wta.f2cc263e5e5a42dfbe15.eastus.aksapp.io #PUBLIC_IP
+  COOKIE_ENCRYPT_PWD: superAwesomePasswordStringThatIsAtLeast32CharactersLong
+  OKTA_ORG_URL: https://dev-91725987.okta.com #OKTA_URL
+  OKTA_CLIENT_ID: 0oac8pd5e7njlMXQX5d6 #OKTA_ID
+  OKTA_CLIENT_SECRET: 7JYCT_g8i1Qmvs9A_o41Fz4Zk_ntSsWkGCO_2Lia #OKTA_SECRET
+  PGHOST: postgresql
+  PGDATABASE: wtapg
+  PGPORT: "5432"
+  SKIP_PREFLIGHT_CHECK: "true"
+
