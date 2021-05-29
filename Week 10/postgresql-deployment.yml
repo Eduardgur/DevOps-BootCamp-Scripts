@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  postgresql-deployment
+  namespace: weighttracker-space
+  labels:
+    app:  postgresql
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app:  postgresql
+    spec:
+      containers:
+      - name:  postgresql
+        image:  postgres:11.12
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key:  postgres-user
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key:  postgres-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+  namespace: weighttracker-space
+spec:
+  selector:
+    app: postgresql
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
